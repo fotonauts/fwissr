@@ -4,7 +4,7 @@ class Fwissr::Source
   autoload :Mongodb, 'fwissr/source/mongodb'
 
   class << self
-  	def from_settings(settings)
+    def from_settings(settings)
       raise "Unexpected source settings class: #{settings.inspect}" unless settings.is_a?(Hash)
 
       if settings['filepath']
@@ -14,7 +14,7 @@ class Fwissr::Source
       else
         raise "Unexpected source settings kind: #{settings.inspect}"
       end
-  	end
+    end
   end # class << self
 
 
