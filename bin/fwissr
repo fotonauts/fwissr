@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'pp'
+
+$:.unshift File.expand_path(File.dirname(__FILE__) + "/../lib")
+require 'fwissr'
+
+begin
+  # parse arguments
+  args = Fwissr.parse_args!(ARGV)
+
+  # get value
+  result = if args[:dump]
+    Fwissr.dump
+  else
+    Fwissr.get(args[:key])
+  end
+
+  # display result
+  if args[:json]
+    if FWISSR_USE_YAJL
+      yajl_options = args[:pretty] ? { :pretty => true, :indent => "  " } : { }
+      puts Yajl::Encoder.encode(result, yajl_options)
+    else
+      puts args[:pretty] ? JSON.pretty_generate(result) : result.to_json
+    end
+  elsif args[:inspect]
+    if args[:pretty]
+      pp result
+    else
+      puts result.inspect
+    end
+  else
+    puts result
+  end
+rescue => ex
+  puts "#{ex.message}"
+  raise ex
+end
