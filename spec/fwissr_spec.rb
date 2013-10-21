@@ -14,39 +14,15 @@ describe Fwissr do
     delete_tmp_mongo_db
   end
 
+  after(:each) do
+    Delorean.back_to_the_present
+  end
+
   it "manages a global registry" do
-    # create additional file sources
-    create_tmp_conf_file('mouarf.lol.json', {
-      'meu' => 'ringue',
-      'pa' => { 'pri' => 'ka'},
-    })
+    # setup
+    setup_global_conf
 
-    create_tmp_conf_file('trop.mdr.json', {
-      'gein' => 'gembre',
-      'pa' => { 'ta' => 'teu'},
-    })
-
-    # create additional mongodb sources
-    create_tmp_mongo_col('roque.fort', {
-      'bar' => 'baz',
-    })
-
-    create_tmp_mongo_col('cam.en.bert', {
-      'pim' => { 'pam' => [ 'pom', 'pum' ] },
-    })
-
-    # create main conf file
-    fwissr_conf = {
-      'fwissr_sources' => [
-        { 'filepath' => tmp_conf_file('mouarf.lol.json') },
-        { 'filepath' => tmp_conf_file('trop.mdr.json'), 'top_level' => true },
-        { 'mongodb'  => tmp_mongo_db_uri, 'collection' => 'roque.fort', 'top_level' => true },
-        { 'mongodb'  => tmp_mongo_db_uri, 'collection' => 'cam.en.bert' },
-      ],
-      'foo' => 'bar',
-    }
-    create_tmp_conf_file('fwissr.json', fwissr_conf)
-
+    # check
     Fwissr['/foo'].should == 'bar'
     Fwissr['/bar'].should == 'baz'
     Fwissr['/cam'].should == { 'en' => { 'bert' => { 'pim' => { 'pam' => [ 'pom', 'pum' ] } } } }
@@ -62,6 +38,10 @@ describe Fwissr do
     Fwissr['/mouarf/lol/pa/pri'].should == 'ka'
     Fwissr['/pa'].should == { 'ta' => 'teu'}
     Fwissr['/pa/ta'].should == 'teu'
+  end
+
+  it "handles fwissr_refresh_period options" do
+    Fwissr.global_registry.refresh_period.should == 5
   end
 
 end

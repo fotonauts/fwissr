@@ -22,7 +22,31 @@ class Fwissr::Source
   # API
   #
 
-  # interface
+  attr_reader :options
+
+  def initialize(options = { })
+    @options = options
+
+    @conf = nil
+  end
+
+  # source can be refreshed ?
+  def can_refresh?
+    @options && (@options['refresh'] == true)
+  end
+
+  # get conf
+  def get_conf
+    if (@conf && !self.can_refresh?)
+      # return already fetched conf if refresh is not allowed
+      @conf
+    else
+      # fetch conf
+      @conf = self.fetch_conf
+    end
+  end
+
+  # fetch conf from source
   def fetch_conf
     # MUST be implemented by child class
     raise "not implemented"

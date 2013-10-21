@@ -2,6 +2,18 @@ require File.join(File.dirname(__FILE__), 'spec_helper')
 
 describe Fwissr::Registry do
 
+  before(:each) do
+    # delete all temporary conf files
+    delete_tmp_conf_files
+
+    # delete all temporary collections
+    delete_tmp_mongo_db
+  end
+
+  after(:each) do
+    Delorean.back_to_the_present
+  end
+
   it "instanciates with a source" do
     # create conf file
     test_conf = {
@@ -11,12 +23,19 @@ describe Fwissr::Registry do
     create_tmp_conf_file('test.json', test_conf)
 
     # test
-    registry = Fwissr::Registry.new()
+    registry = Fwissr::Registry.new('refresh_period' => 20)
     registry.add_source(Fwissr::Source::File.new(tmp_conf_file('test.json')))
+
+    registry.refresh_period.should == 20
 
     registry['/test/foo'].should == 'bar'
     registry['/test/cam/en'].should == 'bert'
     registry['/test/cam'].should == { 'en' => 'bert' }
+  end
+
+  it "have a default refresh period" do
+    registry = Fwissr::Registry.new
+    registry.refresh_period.should == Fwissr::Registry::DEFAULT_REFRESH_PERIOD
   end
 
   it "instanciates with several sources" do
@@ -81,6 +100,69 @@ describe Fwissr::Registry do
 
     # test
     registry.dump.should == { 'test' => test_conf }
+  end
+
+  it "does not refresh from sources before 'refresh_period' option" do
+    # create conf file
+    test_conf = {
+      'foo' => 'bar',
+      'cam' => { 'en' => 'bert'},
+    }
+    create_tmp_conf_file('test.json', test_conf)
+
+    registry = Fwissr::Registry.new('refresh_period' => 5)
+    registry.add_source(Fwissr::Source::File.new(tmp_conf_file('test.json'), 'refresh' => true))
+    registry.dump.should == { 'test' => test_conf }
+
+    # modify conf file
+    delete_tmp_conf_files
+
+    test_conf_modified = {
+      'pouet' => 'meuh',
+    }
+    create_tmp_conf_file('test.json', test_conf_modified)
+
+    Delorean.jump(3)
+
+    # not refreshed yet
+    registry.dump.should == { 'test' => test_conf }
+
+    registry.refresh_thread.should be_nil
+    registry.is_refreshing?.should be_false
+  end
+
+  it "refreshes from sources after 'refresh_period' option" do
+    # create conf file
+    test_conf = {
+      'foo' => 'bar',
+      'cam' => { 'en' => 'bert'},
+    }
+    create_tmp_conf_file('test.json', test_conf)
+
+    registry = Fwissr::Registry.new('refresh_period' => 5)
+    registry.add_source(Fwissr::Source::File.new(tmp_conf_file('test.json'), 'refresh' => true))
+    registry.dump.should == { 'test' => test_conf }
+
+    # modify conf file
+    delete_tmp_conf_files
+
+    test_conf_modified = {
+      'pouet' => 'meuh',
+    }
+    create_tmp_conf_file('test.json', test_conf_modified)
+
+    Delorean.jump(6)
+
+    # triggering refresh
+    registry.dump
+
+    # wait for refresh to end
+    registry.refresh_thread.should_not be_nil
+    registry.refresh_thread.join
+    registry.is_refreshing?.should be_false
+
+    # refresh done
+    registry.dump.should == { 'test' => test_conf_modified }
   end
 
 end

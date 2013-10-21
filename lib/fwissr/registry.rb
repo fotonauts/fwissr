@@ -2,12 +2,14 @@ module Fwissr
 
   class Registry
 
-    # refresh period in seconds (0 means 'no refresh')
+    # refresh period in seconds
     DEFAULT_REFRESH_PERIOD = 15
 
     #
     # API
     #
+
+    attr_reader :refresh_period
 
     def initialize(options = { })
       @refresh_period = options['refresh_period'] || DEFAULT_REFRESH_PERIOD
@@ -16,8 +18,9 @@ module Fwissr
       @registry  = nil
       @last_load = nil
 
-      @semaphore     = Mutex.new
-      @is_refreshing = false
+      @semaphore      = Mutex.new
+      @is_refreshing  = false
+      @refresh_thread = nil
     end
 
     def add_source(source)
@@ -63,11 +66,19 @@ module Fwissr
       @registry && @last_load && ((Time.now - @last_load) < @refresh_period)
     end
 
-    def must_refresh?
-      (@refresh_period > 0) && !self.is_fresh? && !@is_refreshing
+    def is_refreshing?
+      (@is_refreshing == true)
     end
 
-    def refresh
+    def must_refresh?
+      @refresh_period && (@refresh_period > 0) && !self.is_fresh? && !self.is_refreshing?
+    end
+
+    def refresh_thread
+      @refresh_thread
+    end
+
+    def do_refresh
       @semaphore.synchronize do
         if self.must_refresh?
           if @registry.nil?
@@ -76,7 +87,7 @@ module Fwissr
           else
             # refresh asynchronously
             @is_refreshing = true
-            Thread.new do
+            @refresh_thread = Thread.new do
               begin
                 self.load_registry
               ensure
@@ -89,7 +100,9 @@ module Fwissr
     end
 
     def registry
-      self.refresh if self.must_refresh?
+      if self.must_refresh?
+        self.do_refresh
+      end
 
       @registry
     end
@@ -98,7 +111,7 @@ module Fwissr
       result = { }
 
       @sources.each do |source|
-        source_conf = source.fetch_conf
+        source_conf = source.get_conf
         result = Fwissr.merge_conf!(result, source_conf)
       end
 

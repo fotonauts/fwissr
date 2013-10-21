@@ -1,8 +1,45 @@
 require 'rubygems'
 require 'mongo'
+require 'delorean'
 
 $:.unshift(File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib')))
 require 'fwissr'
+
+
+def setup_global_conf
+  # create additional file sources
+  create_tmp_conf_file('mouarf.lol.json', {
+    'meu' => 'ringue',
+    'pa' => { 'pri' => 'ka'},
+  })
+
+  create_tmp_conf_file('trop.mdr.json', {
+    'gein' => 'gembre',
+    'pa' => { 'ta' => 'teu'},
+  })
+
+  # create additional mongodb sources
+  create_tmp_mongo_col('roque.fort', {
+    'bar' => 'baz',
+  })
+
+  create_tmp_mongo_col('cam.en.bert', {
+    'pim' => { 'pam' => [ 'pom', 'pum' ] },
+  })
+
+  # create main conf file
+  fwissr_conf = {
+    'fwissr_sources' => [
+      { 'filepath' => tmp_conf_file('mouarf.lol.json') },
+      { 'filepath' => tmp_conf_file('trop.mdr.json'), 'top_level' => true },
+      { 'mongodb'  => tmp_mongo_db_uri, 'collection' => 'roque.fort', 'top_level' => true },
+      { 'mongodb'  => tmp_mongo_db_uri, 'collection' => 'cam.en.bert' },
+    ],
+    'fwissr_refresh_period' => 5,
+    'foo' => 'bar',
+  }
+  create_tmp_conf_file('fwissr.json', fwissr_conf)
+end
 
 
 #

@@ -36,17 +36,18 @@ class Fwissr::Source::Mongodb < Fwissr::Source
 
   TOP_LEVEL_COLLECTIONS = [ 'fwissr', 'config' ].freeze
 
-  attr_reader :conn, :db_name, :collection_name, :options
+  attr_reader :conn, :db_name, :collection_name
 
   #
   # API
   #
 
   def initialize(conn, db_name, collection_name, options = { })
+    super(options)
+
     @conn            = conn
     @db_name         = db_name
     @collection_name = collection_name
-    @options         = options
   end
 
   def fetch_conf

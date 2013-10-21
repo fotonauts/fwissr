@@ -134,15 +134,16 @@ module Fwissr
     #    'fwissr_sources': [
     #      { 'filepath': '/mnt/my_app/conf/' },
     #      { 'filepath': '/etc/my_app.json' },
-    #      { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config' },
-    #    ]
+    #      { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config', 'refresh': true },
+    #    ],
+    #    'fwissr_refresh_period': 30,
     # }
     #
 
     # access global registry with Fwissr['/foo/bar']
     def global_registry
       @global_registry ||= begin
-        result = Fwissr::Registry.new()
+        result = Fwissr::Registry.new('refresh_period' => self.main_conf['fwissr_refresh_period'])
 
         # check main conf files
         if !File.exists?(self.main_conf_file) && !File.exists?(self.main_user_conf_file)

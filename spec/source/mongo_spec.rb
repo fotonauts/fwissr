@@ -33,7 +33,7 @@ describe Fwissr::Source::Mongodb do
     conf_fetched = source.fetch_conf
 
     # check
-    conf_fetched.should == { 'test' => test_conf}
+    conf_fetched.should == { 'test' => test_conf }
   end
 
   it "maps collection name to key parts" do
@@ -58,7 +58,7 @@ describe Fwissr::Source::Mongodb do
     # create collection
     test_conf = {
       'foo' => 'bar',
-      'cam' => { 'en' => 'bert'},
+      'cam' => { 'en' => 'bert' },
     }
     create_tmp_mongo_col(top_level_conf_col_name, test_conf)
 
@@ -74,7 +74,7 @@ describe Fwissr::Source::Mongodb do
     # create collection
     test_conf = {
       'foo' => 'bar',
-      'cam' => { 'en' => 'bert'},
+      'cam' => { 'en' => 'bert' },
     }
     create_tmp_mongo_col('cam.en.bert', test_conf)
 
@@ -85,4 +85,55 @@ describe Fwissr::Source::Mongodb do
     # check
     conf_fetched.should == test_conf
   end
+
+  it "should refresh conf is allowed to" do
+    # create collection
+    test_conf = {
+      'foo' => 'bar',
+      'cam' => { 'en' => 'bert'},
+    }
+    create_tmp_mongo_col('test', test_conf)
+
+    source = Fwissr::Source.from_settings({ 'mongodb' => tmp_mongo_db_uri, 'collection' => 'test', 'refresh' => true })
+    conf_fetched = source.get_conf
+    conf_fetched.should == { 'test' => test_conf }
+
+    # update conf
+    delete_tmp_mongo_db
+
+    test_conf_modified = {
+      'foo' => 'meuh',
+    }
+    create_tmp_mongo_col('test', test_conf_modified)
+
+    # test
+    conf_fetched = source.get_conf
+    conf_fetched.should == { 'test' => test_conf_modified }
+  end
+
+  it "should NOT refresh conf if not allowed" do
+    # create collection
+    test_conf = {
+      'foo' => 'bar',
+      'cam' => { 'en' => 'bert'},
+    }
+    create_tmp_mongo_col('test', test_conf)
+
+    source = Fwissr::Source.from_settings({ 'mongodb' => tmp_mongo_db_uri, 'collection' => 'test' })
+    conf_fetched = source.get_conf
+    conf_fetched.should == { 'test' => test_conf }
+
+    # update conf
+    delete_tmp_mongo_db
+
+    test_conf_modified = {
+      'foo' => 'meuh',
+    }
+    create_tmp_mongo_col('test', test_conf_modified)
+
+    # test
+    conf_fetched = source.get_conf
+    conf_fetched.should == { 'test' => test_conf }
+  end
+
 end

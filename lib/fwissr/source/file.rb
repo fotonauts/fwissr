@@ -22,17 +22,18 @@ class Fwissr::Source::File < Fwissr::Source
 
   TOP_LEVEL_CONF_FILES = [ 'fwissr', 'config' ].freeze
 
-  attr_reader :path, :options
+  attr_reader :path
 
   #
   # API
   #
 
   def initialize(path, options = { })
+    super(options)
+
     raise "File not found: #{path}" if !::File.exists?(path)
 
-    @path    = path
-    @options = options
+    @path = path
   end
 
   def fetch_conf

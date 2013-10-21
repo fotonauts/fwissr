@@ -36,7 +36,7 @@ describe Fwissr::Source::File do
     conf_fetched = source.fetch_conf
 
     # check
-    conf_fetched.should == { 'test' => test_conf}
+    conf_fetched.should == { 'test' => test_conf }
   end
 
   it "fetches YAML conf" do
@@ -52,7 +52,7 @@ describe Fwissr::Source::File do
     conf_fetched = source.fetch_conf
 
     # check
-    conf_fetched.should == { 'test' => test_conf}
+    conf_fetched.should == { 'test' => test_conf }
   end
 
   it "fetches all conf files from a directory" do
@@ -126,4 +126,57 @@ describe Fwissr::Source::File do
     # check
     conf_fetched.should == test_conf
   end
+
+  it "should refresh conf is allowed to" do
+    # create conf file
+    test_conf = {
+      'foo' => 'bar',
+      'cam' => { 'en' => 'bert'},
+    }
+    create_tmp_conf_file("test.json", test_conf)
+
+    source = Fwissr::Source::File.from_path(tmp_conf_file("test.json"), 'refresh' => true)
+    conf_fetched = source.get_conf
+    conf_fetched.should == { 'test' => test_conf }
+
+    # change file
+    delete_tmp_conf_files
+
+    test_conf_modified = {
+      'foo' => 'pouet',
+      'cam' => { 'en' => 'bert'},
+    }
+    create_tmp_conf_file("test.json", test_conf_modified)
+
+    # test
+    conf_fetched = source.get_conf
+    conf_fetched.should == { 'test' => test_conf_modified }
+  end
+
+  it "should NOT refresh conf if not allowed" do
+    # create conf file
+    test_conf = {
+      'foo' => 'bar',
+      'cam' => { 'en' => 'bert'},
+    }
+    create_tmp_conf_file("test.json", test_conf)
+
+    source = Fwissr::Source::File.from_path(tmp_conf_file("test.json"))
+    conf_fetched = source.get_conf
+    conf_fetched.should == { 'test' => test_conf }
+
+    # change file
+    delete_tmp_conf_files
+
+    test_conf_modified = {
+      'foo' => 'pouet',
+      'cam' => { 'en' => 'bert'},
+    }
+    create_tmp_conf_file("test.json", test_conf_modified)
+
+    # test
+    conf_fetched = source.get_conf
+    conf_fetched.should == { 'test' => test_conf }
+  end
+
 end
