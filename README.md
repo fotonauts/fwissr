@@ -89,7 +89,7 @@ Provide additional configuration files with the `fwissr_sources` setting in `fwi
 }
 ```
 
-In that case, the settings for that configuration will be prefixed with `/my_app`.
+The settings for that configuration will be prefixed with the file name.
 
 For example, with that `/etc/my_app.json`:
 
