@@ -7,11 +7,9 @@ A simple configuration registry tool by Fotonauts.
 Install
 =======
 
-{% highlight bash %}
-
+```bash
     $ [sudo] gem install fwissr
-
-{% endhighlight %}
+```
 
 Or add it to your `Gemfile`.
 
@@ -21,16 +19,13 @@ Usage
 
 Create the main `fwissr.json` configuration file in either `/etc/fwissr/` or `~/.fwissr/` directory:
 
-{% highlight json %}
-
+```json
     { "foo" : "bar", "fart" : { "big" : true, "sounds": [ "pRrrraaa", "pshiiiiii" ] } }
-
-{% endhighlight %}
+```
 
 In your application, you can access fwissr's global registry that way:
 
-{% highlight ruby %}
-
+```ruby
     require 'fwissr'
 
     Fwissr['/fart/big']
@@ -41,13 +36,11 @@ In your application, you can access fwissr's global registry that way:
 
     Fwissr['/fart']
     # => { "big" => true, "sounds" => [ "pRrrraaa", "pshiiiiii" ] }
-
-{% endhighlight %}
+```
 
 In bash you can call the `fwissr` tool:
 
-{% highlight bash %}
-
+```json
     $ fwissr /foo
     bar
 
@@ -77,8 +70,7 @@ In bash you can call the `fwissr` tool:
         ]
       }
     }
-
-{% endhighlight %}
+```
 
 
 Additional configuration file
@@ -86,30 +78,25 @@ Additional configuration file
 
 Provide additional configuration files with the `fwissr_sources` setting in `fwissr.json`:
 
-{% highlight json %}
-
+```json
     {
        'fwissr_sources': [
          { 'filepath': '/etc/my_app.json' },
        ],
     }
-
-{% endhighlight %}
+```
 
 In that case, the keys for that configuration will be prefixed with `my_app`.
 
 For example, with `/etc/my_app.json` being:
 
-{% highlight json %}
-
+```json
     { "foo": "bar", "bar": "baz" }
-
-{% endhighlight %}
+```
 
 the keys can be accessed like that:
 
-{% highlight ruby %}
-
+```ruby
     require 'fwissr'
 
     Fwissr['/my_app/foo']
@@ -120,8 +107,7 @@ the keys can be accessed like that:
 
     Fwissr['/my_app']
     # => { "foo" => "bar", "bar" => "baz" }
-
-{% endhighlight %}
+```
 
 Note that you can provide `.json` and `.yaml` configuration files.
 
@@ -131,20 +117,17 @@ Directory of configuration files
 
 If the `filepath` setting is a directory, then all `.json` and `.yaml` files in that directory (but NOT in subdirectories) will be imported in global registry:
 
-{% highlight json %}
-
+```json
     {
        'fwissr_sources': [
          { 'filepath': '/mnt/my_app/conf/' },
        ],
     }
-
-{% endhighlight %}
+```
 
 With `/mnt/my_app/conf/database.yaml`:
 
-{% highlight yaml %}
-
+```yaml
 production:
   adapter: mysql2
   encoding: utf8
@@ -152,21 +135,17 @@ production:
   username: my_app_user
   password: my_app_pass
   host: db.my_app.com
-
-{% endhighlight %}
+```
 
 and `/mnt/my_app/conf/credentials.json`:
 
-{% highlight json %}
-
+```json
     { "key": "i5qw64816c", "code": "448e4wef161" }
-
-{% endhighlight %}
+```
 
 the keys can be accessed like that:
 
-{% highlight ruby %}
-
+```ruby
     require 'fwissr'
 
     Fwissr['/database/production/host']
@@ -180,8 +159,7 @@ the keys can be accessed like that:
 
     Fwissr['/credentials']
     # => { "key" => "i5qw64816c", "code" => "448e4wef161" }
-
-{% endhighlight %}
+```
 
 
 File name mapping to keys
@@ -191,28 +169,23 @@ Use dots in file name to define a path for configuration keys.
 
 For example:
 
-{% highlight json %}
-
+```json
     {
        'fwissr_sources': [
          { 'filepath': '/etc/my_app.database.json' },
        ],
     }
-
-{% endhighlight %}
+```
 
 with `/etc/my_app.database.json` being:
 
-{% highlight json %}
-
+```json
     { "host": "db.my_app.com", "port": "1337" }
-
-{% endhighlight %}
+```
 
 the keys can be accessed like that:
 
-{% highlight ruby %}
-
+```ruby
     require 'fwissr'
 
     Fwissr['/my_app/database/host']
@@ -220,8 +193,7 @@ the keys can be accessed like that:
 
     Fwissr['/my_app/database/port']
     # => "1337"
-
-{% endhighlight %}
+```
 
 
 Mongodb source
@@ -229,15 +201,13 @@ Mongodb source
 
 You can define a mongob collection as a configuration source:
 
-{% highlight json %}
-
+```json
     {
        'fwissr_sources': [
             { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config' },
        ],
     }
-
-{% endhighlight %}
+```
 
 Each document in the collection is a setting for that configuration, and as with configuration files you can use dots in collection name to define a path for configuration keys.
 
@@ -245,16 +215,13 @@ The `_id` document field is the setting key, and the `value` document field is t
 
 For example:
 
-{% highlight %}
-
+```
     > db['my_app.master'].find()
     { "_id" : "foo", "value" : "bar" }
     { "_id" : "database", "value" : { "host": "db.my_app.com", "port": "1337" } }
+```
 
-{% endhighlight %}
-
-{% highlight ruby %}
-
+```ruby
     require 'fwissr'
 
     Fwissr['/my_app/master/foo']
@@ -262,9 +229,7 @@ For example:
 
     Fwissr['/my_app/master/database/port']
     # => "1337"
-
-{% endhighlight %}
-
+```
 
 Refreshing registry
 ===================
@@ -273,8 +238,7 @@ Enable registry auto-update with the `refresh` setting for sources.
 
 For example:
 
-{% highlight json %}
-
+```json
     {
        'fwissr_sources': [
             { 'filepath': '/etc/my_app/my_app.json' },
@@ -283,15 +247,13 @@ For example:
             { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config', 'refresh': true },
        ],
     }
-
-{% endhighlight %}
+```
 
 The `/etc/my_app/my_app.json` configuration file and the `global` mongodb collection are read only once when global registry is accessed for the first time, whereas the settings holded by the `/etc/my_app/stuff.json` configuration file and the `configuration` mongodb collections are expired periodically and re-fetched.
 
 The default freshness is 15 seconds, but you can change it with the `fwissr_refresh_period` setting:
 
-{% highlight json %}
-
+```json
     {
        'fwissr_sources': [
             { 'filepath': '/etc/my_app/my_app.json' },
@@ -301,13 +263,11 @@ The default freshness is 15 seconds, but you can change it with the `fwissr_refr
        ],
        'fwissr_refresh_period': 60,
     }
-
-{% endhighlight %}
+```
 
 The refresh is triggered when accessing the global registry, and it is done asynchronously in a thread:
 
-{% highlight ruby %}
-
+```ruby
     require 'fwissr'
 
     Fwissr['/stuff/foo']
@@ -327,8 +287,7 @@ The refresh is triggered when accessing the global registry, and it is done asyn
     # The new value is now in the registry
     Fwissr['/stuff/foo']
     # => "baz"
-
-{% endhighlight %}
+```
 
 
 Create a custom registry
@@ -336,8 +295,7 @@ Create a custom registry
 
 Fwissr is intended to be easy to setup: just create a configuration file and that configuration is accessible via the global registry. But if you need to, you can create your own custom registry.
 
-{% highlight ruby %}
-
+```ruby
     require 'fwissr'
 
     # create registry, with custom refresh period
@@ -351,8 +309,7 @@ Fwissr is intended to be easy to setup: just create a configuration file and tha
 
     registry['/stuff/foo']
     # => 'bar'
-
-{% endhighlight %}
+```
 
 
 Credits
