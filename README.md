@@ -8,7 +8,7 @@ Install
 =======
 
 ```bash
-    $ [sudo] gem install fwissr
+$ [sudo] gem install fwissr
 ```
 
 Or add it to your `Gemfile`.
@@ -20,56 +20,59 @@ Usage
 Create the main `fwissr.json` configuration file in either `/etc/fwissr/` or `~/.fwissr/` directory:
 
 ```json
-    { "foo" : "bar", "fart" : { "big" : true, "sounds": [ "pRrrraaa", "pshiiiiii" ] } }
+{ "foo" : "bar", "fart" : { "big" : true, "sounds": [ "pRrrraaa", "pshiiiiii" ] } }
 ```
 
-In your application, you can access fwissr's global registry that way:
+In your application, you can access `fwissr`'s global registry that way:
 
 ```ruby
-    require 'fwissr'
+require 'fwissr'
 
-    Fwissr['/fart/big']
-    # => true
+Fwissr['/foo']
+# => "bar"
 
-    Fwissr['/fart/sounds']
-    # => [ "pRrrraaa", "pshiiiiii" ]
+Fwissr['/fart/big']
+# => true
 
-    Fwissr['/fart']
-    # => { "big" => true, "sounds" => [ "pRrrraaa", "pshiiiiii" ] }
+Fwissr['/fart/sounds']
+# => [ "pRrrraaa", "pshiiiiii" ]
+
+Fwissr['/fart']
+# => { "big" => true, "sounds" => [ "pRrrraaa", "pshiiiiii" ] }
 ```
 
 In bash you can call the `fwissr` tool:
 
-```json
-    $ fwissr /foo
-    bar
+```bash
+$ fwissr /foo
+bar
 
-    # json output
-    $ fwissr -j /fart
-    { "big" : true, "sounds": [ "pRrrraaa", "pshiiiiii" ] }
+# json output
+$ fwissr -j /fart
+{ "big" : true, "sounds": [ "pRrrraaa", "pshiiiiii" ] }
 
-    # pretty print json output
-    $ fwissr -j -p /fart
-    {
-      "big": true,
-      "sound": [
-        "pRrrraaa",
-        "pshiiiiii"
-      ]
-    }
+# pretty print json output
+$ fwissr -j -p /fart
+{
+  "big": true,
+  "sound": [
+    "pRrrraaa",
+    "pshiiiiii"
+  ]
+}
 
-    # dump all registry with pretty print json output
-    # NOTE: yes, that's the same as 'fwissr -jp /'
-    $ fwissr --dump -jp
-    {
-      "fart": {
-        "big": true,
-        "sound": [
-          "pRrrraaa",
-          "pshiiiiii"
-        ]
-      }
-    }
+# dump all registry with pretty print json output
+# NOTE: yes, that's the same as 'fwissr -jp /'
+$ fwissr --dump -jp
+{
+  "fart": {
+    "big": true,
+    "sound": [
+      "pRrrraaa",
+      "pshiiiiii"
+    ]
+  }
+}
 ```
 
 
@@ -79,11 +82,11 @@ Additional configuration file
 Provide additional configuration files with the `fwissr_sources` setting in `fwissr.json`:
 
 ```json
-    {
-       'fwissr_sources': [
-         { 'filepath': '/etc/my_app.json' },
-       ],
-    }
+{
+   "fwissr_sources": [
+     { "filepath": "/etc/my_app.json" },
+   ],
+}
 ```
 
 In that case, the keys for that configuration will be prefixed with `my_app`.
@@ -91,22 +94,22 @@ In that case, the keys for that configuration will be prefixed with `my_app`.
 For example, with `/etc/my_app.json` being:
 
 ```json
-    { "foo": "bar", "bar": "baz" }
+{ "foo": "bar", "bar": "baz" }
 ```
 
 the keys can be accessed like that:
 
 ```ruby
-    require 'fwissr'
+require 'fwissr'
 
-    Fwissr['/my_app/foo']
-    # => "bar"
+Fwissr['/my_app/foo']
+# => "bar"
 
-    Fwissr['/my_app/bar']
-    # => "baz"
+Fwissr['/my_app/bar']
+# => "baz"
 
-    Fwissr['/my_app']
-    # => { "foo" => "bar", "bar" => "baz" }
+Fwissr['/my_app']
+# => { "foo" => "bar", "bar" => "baz" }
 ```
 
 Note that you can provide `.json` and `.yaml` configuration files.
@@ -118,11 +121,11 @@ Directory of configuration files
 If the `filepath` setting is a directory, then all `.json` and `.yaml` files in that directory (but NOT in subdirectories) will be imported in global registry:
 
 ```json
-    {
-       'fwissr_sources': [
-         { 'filepath': '/mnt/my_app/conf/' },
-       ],
-    }
+{
+   "fwissr_sources": [
+     { "filepath": "/mnt/my_app/conf/" },
+   ],
+}
 ```
 
 With `/mnt/my_app/conf/database.yaml`:
@@ -140,25 +143,25 @@ production:
 and `/mnt/my_app/conf/credentials.json`:
 
 ```json
-    { "key": "i5qw64816c", "code": "448e4wef161" }
+{ "key": "i5qw64816c", "code": "448e4wef161" }
 ```
 
 the keys can be accessed like that:
 
 ```ruby
-    require 'fwissr'
+require 'fwissr'
 
-    Fwissr['/database/production/host']
-    # => "db.my_app.com"
+Fwissr['/database/production/host']
+# => "db.my_app.com"
 
-    Fwissr['/database']
-    # => { "production" => { "adapter" => "mysql2", "encoding" => "utf8", "database" => "my_app_db", "username" => "my_app_user", "password" => "my_app_pass", "host" => "db.my_app.com" } }
+Fwissr['/database']
+# => { "production" => { "adapter" => "mysql2", "encoding" => "utf8", "database" => "my_app_db", "username" => "my_app_user", "password" => "my_app_pass", "host" => "db.my_app.com" } }
 
-    Fwissr['/credentials/key']
-    # => "i5qw64816c"
+Fwissr['/credentials/key']
+# => "i5qw64816c"
 
-    Fwissr['/credentials']
-    # => { "key" => "i5qw64816c", "code" => "448e4wef161" }
+Fwissr['/credentials']
+# => { "key" => "i5qw64816c", "code" => "448e4wef161" }
 ```
 
 
@@ -170,29 +173,29 @@ Use dots in file name to define a path for configuration keys.
 For example:
 
 ```json
-    {
-       'fwissr_sources': [
-         { 'filepath': '/etc/my_app.database.json' },
-       ],
-    }
+{
+   "fwissr_sources": [
+     { "filepath": "/etc/my_app.database.json" },
+   ],
+}
 ```
 
 with `/etc/my_app.database.json` being:
 
 ```json
-    { "host": "db.my_app.com", "port": "1337" }
+{ "host": "db.my_app.com", "port": "1337" }
 ```
 
 the keys can be accessed like that:
 
 ```ruby
-    require 'fwissr'
+require 'fwissr'
 
-    Fwissr['/my_app/database/host']
-    # => "db.my_app.com"
+Fwissr['/my_app/database/host']
+# => "db.my_app.com"
 
-    Fwissr['/my_app/database/port']
-    # => "1337"
+Fwissr['/my_app/database/port']
+# => "1337"
 ```
 
 
@@ -202,11 +205,11 @@ Mongodb source
 You can define a mongob collection as a configuration source:
 
 ```json
-    {
-       'fwissr_sources': [
-            { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config' },
-       ],
-    }
+{
+   "fwissr_sources": [
+        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "config" },
+   ],
+}
 ```
 
 Each document in the collection is a setting for that configuration, and as with configuration files you can use dots in collection name to define a path for configuration keys.
@@ -216,19 +219,19 @@ The `_id` document field is the setting key, and the `value` document field is t
 For example:
 
 ```
-    > db['my_app.master'].find()
-    { "_id" : "foo", "value" : "bar" }
-    { "_id" : "database", "value" : { "host": "db.my_app.com", "port": "1337" } }
+> db["my_app.master"].find()
+{ "_id" : "foo", "value" : "bar" }
+{ "_id" : "database", "value" : { "host": "db.my_app.com", "port": "1337" } }
 ```
 
 ```ruby
-    require 'fwissr'
+require 'fwissr'
 
-    Fwissr['/my_app/master/foo']
-    # => "bar"
+Fwissr['/my_app/master/foo']
+# => "bar"
 
-    Fwissr['/my_app/master/database/port']
-    # => "1337"
+Fwissr['/my_app/master/database/port']
+# => "1337"
 ```
 
 Refreshing registry
@@ -239,14 +242,14 @@ Enable registry auto-update with the `refresh` setting for sources.
 For example:
 
 ```json
-    {
-       'fwissr_sources': [
-            { 'filepath': '/etc/my_app/my_app.json' },
-            { 'filepath': '/etc/my_app/stuff.json', 'refresh': true },
-            { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'global' },
-            { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config', 'refresh': true },
-       ],
-    }
+{
+   "fwissr_sources": [
+        { "filepath": "/etc/my_app/my_app.json" },
+        { "filepath": "/etc/my_app/stuff.json", "refresh": true },
+        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "global" },
+        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "config", "refresh": true },
+   ],
+}
 ```
 
 The `/etc/my_app/my_app.json` configuration file and the `global` mongodb collection are read only once when global registry is accessed for the first time, whereas the settings holded by the `/etc/my_app/stuff.json` configuration file and the `configuration` mongodb collections are expired periodically and re-fetched.
@@ -254,39 +257,39 @@ The `/etc/my_app/my_app.json` configuration file and the `global` mongodb collec
 The default freshness is 15 seconds, but you can change it with the `fwissr_refresh_period` setting:
 
 ```json
-    {
-       'fwissr_sources': [
-            { 'filepath': '/etc/my_app/my_app.json' },
-            { 'filepath': '/etc/my_app/stuff.json', 'refresh': true },
-            { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'global' },
-            { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config', 'refresh': true },
-       ],
-       'fwissr_refresh_period': 60,
-    }
+{
+   "fwissr_sources": [
+        { "filepath": "/etc/my_app/my_app.json" },
+        { "filepath": "/etc/my_app/stuff.json", "refresh": true },
+        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "global" },
+        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "config", "refresh": true },
+   ],
+   "fwissr_refresh_period": 60,
+}
 ```
 
 The refresh is triggered when accessing the global registry, and it is done asynchronously in a thread:
 
 ```ruby
-    require 'fwissr'
+require 'fwissr'
 
-    Fwissr['/stuff/foo']
-    # => "bar"
+Fwissr['/stuff/foo']
+# => "bar"
 
-    # > Change '/etc/my_app/stuff.json' file by setting: {"foo":"baz"}
+# > Change '/etc/my_app/stuff.json' file by setting: {"foo":"baz"}
 
-    # Wait 2 minutes
-    sleep(120)
+# Wait 2 minutes
+sleep(120)
 
-    # An async refresh is launched in a thread and the old value is still returned
-    Fwissr['/stuff/foo']
-    # => "bar"
+# An async refresh is launched in a thread and the old value is still returned
+Fwissr['/stuff/foo']
+# => "bar"
 
-    # > Async refresh is over
+# > Async refresh is over
 
-    # The new value is now in the registry
-    Fwissr['/stuff/foo']
-    # => "baz"
+# The new value is now in the registry
+Fwissr['/stuff/foo']
+# => "baz"
 ```
 
 
@@ -296,19 +299,19 @@ Create a custom registry
 Fwissr is intended to be easy to setup: just create a configuration file and that configuration is accessible via the global registry. But if you need to, you can create your own custom registry.
 
 ```ruby
-    require 'fwissr'
+require 'fwissr'
 
-    # create registry, with custom refresh period
-    registry = Fwissr::Registry.new('refresh_period' => 20)
+# create registry, with custom refresh period
+registry = Fwissr::Registry.new('refresh_period' => 20)
 
-    # add configuration sources to registry
-    registry.add_source(Fwissr::Source.from_settings({ 'filepath': '/etc/my_app/my_app.json' }))
-    registry.add_source(Fwissr::Source.from_settings({ 'filepath': '/etc/my_app/stuff.json', 'refresh': true }))
-    registry.add_source(Fwissr::Source.from_settings({ 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'global' }))
-    registry.add_source(Fwissr::Source.from_settings({ 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config', 'refresh': true }))
+# add configuration sources to registry
+registry.add_source(Fwissr::Source.from_settings({ 'filepath': '/etc/my_app/my_app.json' }))
+registry.add_source(Fwissr::Source.from_settings({ 'filepath': '/etc/my_app/stuff.json', 'refresh': true }))
+registry.add_source(Fwissr::Source.from_settings({ 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'global' }))
+registry.add_source(Fwissr::Source.from_settings({ 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config', 'refresh': true }))
 
-    registry['/stuff/foo']
-    # => 'bar'
+registry['/stuff/foo']
+# => 'bar'
 ```
 
 
