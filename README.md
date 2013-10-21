@@ -31,14 +31,14 @@ require 'fwissr'
 Fwissr['/foo']
 # => "bar"
 
+Fwissr['/fart']
+# => { "big" => true, "sounds" => [ "pRrrraaa", "pshiiiiii" ] }
+
 Fwissr['/fart/big']
 # => true
 
 Fwissr['/fart/sounds']
 # => [ "pRrrraaa", "pshiiiiii" ]
-
-Fwissr['/fart']
-# => { "big" => true, "sounds" => [ "pRrrraaa", "pshiiiiii" ] }
 ```
 
 In bash you can call the `fwissr` tool:
@@ -102,14 +102,14 @@ the keys can be accessed like that:
 ```ruby
 require 'fwissr'
 
+Fwissr['/my_app']
+# => { "foo" => "bar", "bar" => "baz" }
+
 Fwissr['/my_app/foo']
 # => "bar"
 
 Fwissr['/my_app/bar']
 # => "baz"
-
-Fwissr['/my_app']
-# => { "foo" => "bar", "bar" => "baz" }
 ```
 
 Note that you can provide `.json` and `.yaml` configuration files.
@@ -151,17 +151,17 @@ the keys can be accessed like that:
 ```ruby
 require 'fwissr'
 
-Fwissr['/database/production/host']
-# => "db.my_app.com"
-
 Fwissr['/database']
 # => { "production" => { "adapter" => "mysql2", "encoding" => "utf8", "database" => "my_app_db", "username" => "my_app_user", "password" => "my_app_pass", "host" => "db.my_app.com" } }
 
-Fwissr['/credentials/key']
-# => "i5qw64816c"
+Fwissr['/database/production/host']
+# => "db.my_app.com"
 
 Fwissr['/credentials']
 # => { "key" => "i5qw64816c", "code" => "448e4wef161" }
+
+Fwissr['/credentials/key']
+# => "i5qw64816c"
 ```
 
 
@@ -230,6 +230,9 @@ require 'fwissr'
 Fwissr['/my_app/master/foo']
 # => "bar"
 
+Fwissr['/my_app/master/database']
+# => { "host": "db.my_app.com", "port": "1337" }
+
 Fwissr['/my_app/master/database/port']
 # => "1337"
 ```
@@ -252,7 +255,7 @@ For example:
 }
 ```
 
-The `/etc/my_app/my_app.json` configuration file and the `global` mongodb collection are read only once when global registry is accessed for the first time, whereas the settings holded by the `/etc/my_app/stuff.json` configuration file and the `configuration` mongodb collections are expired periodically and re-fetched.
+The `/etc/my_app/my_app.json` configuration file and the `global` mongodb collection are read only once when global registry is accessed for the first time, whereas the settings holded by the `/etc/my_app/stuff.json` configuration file and the `config` mongodb collection are expired periodically and re-fetched.
 
 The default freshness is 15 seconds, but you can change it with the `fwissr_refresh_period` setting:
 
@@ -281,7 +284,7 @@ Fwissr['/stuff/foo']
 # Wait 2 minutes
 sleep(120)
 
-# An async refresh is launched in a thread and the old value is still returned
+# This following registry access triggers an async refresh in a thread, and the old value is still returned for now
 Fwissr['/stuff/foo']
 # => "bar"
 
@@ -296,12 +299,12 @@ Fwissr['/stuff/foo']
 Create a custom registry
 ========================
 
-Fwissr is intended to be easy to setup: just create a configuration file and that configuration is accessible via the global registry. But if you need to, you can create your own custom registry.
+`fwissr` is intended to be easy to setup: just create a configuration file and that configuration is accessible via the global registry. But if you need to, you can create your own custom registry.
 
 ```ruby
 require 'fwissr'
 
-# create registry, with custom refresh period
+# create a custom registry
 registry = Fwissr::Registry.new('refresh_period' => 20)
 
 # add configuration sources to registry
