@@ -20,7 +20,7 @@ class Fwissr::Source::File < Fwissr::Source
   end # class << self
 
 
-  TOP_LEVEL_CONF_FILES = [ 'fwissr', 'config' ].freeze
+  TOP_LEVEL_CONF_FILES = [ 'fwissr' ].freeze
 
   attr_reader :path
 

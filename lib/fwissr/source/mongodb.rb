@@ -34,7 +34,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
   end # class << self
 
 
-  TOP_LEVEL_COLLECTIONS = [ 'fwissr', 'config' ].freeze
+  TOP_LEVEL_COLLECTIONS = [ 'fwissr' ].freeze
 
   attr_reader :conn, :db_name, :collection_name
 

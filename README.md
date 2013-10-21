@@ -112,6 +112,31 @@ Fwissr['/my_app/bar']
 # => "baz"
 ```
 
+You can bypass that behaviour with the `top_level` setting:
+
+```json
+{
+   "fwissr_sources": [
+     { "filepath": "/etc/my_app.json", "top_level": true },
+   ],
+}
+```
+
+With the `top_level` setting activated the configuration settings are added to registry root:
+
+```ruby
+require 'fwissr'
+
+Fwissr['/']
+# => { "foo" => "bar", "bar" => "baz" }
+
+Fwissr['/foo']
+# => "bar"
+
+Fwissr['/bar']
+# => "baz"
+```
+
 Note that you can provide `.json` and `.yaml` configuration files.
 
 
@@ -146,7 +171,7 @@ and `/mnt/my_app/conf/credentials.json`:
 { "key": "i5qw64816c", "code": "448e4wef161" }
 ```
 
-the settings can be accessed like that:
+the settings can be accessed that way:
 
 ```ruby
 require 'fwissr'
@@ -186,7 +211,7 @@ with `/etc/my_app.database.json` being:
 { "host": "db.my_app.com", "port": "1337" }
 ```
 
-the settings can be accessed like that:
+the settings can be accessed that way:
 
 ```ruby
 require 'fwissr'
@@ -212,7 +237,7 @@ You can define a mongob collection as a configuration source:
 }
 ```
 
-Each document in the collection is a setting for that configuration, and as with configuration files you can use dots in collection name to define a path for configuration settings.
+Each document in the collection is a setting for that configuration.
 
 The `_id` document field is the setting key, and the `value` document field is the setting value.
 
@@ -236,6 +261,9 @@ Fwissr['/my_app/master/database']
 Fwissr['/my_app/master/database/port']
 # => "1337"
 ```
+
+As with configuration files you can use dots in collection name to define a path for configuration settings. The `top_level` setting is also supported to bypass that behaviour. Note too that the `fwissr` collection is by default a `top_level` configuration (as the `/etc/fwissr/fwissr.json` configuration file).
+
 
 Refreshing registry
 ===================
