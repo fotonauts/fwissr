@@ -200,12 +200,12 @@ For example:
 ```json
 {
    "fwissr_sources": [
-     { "filepath": "/etc/my_app.database.json" },
+     { "filepath": "/etc/my_app.database.slave.json" },
    ],
 }
 ```
 
-with `/etc/my_app.database.json` being:
+with that `/etc/my_app.database.slave.json`:
 
 ```json
 { "host": "db.my_app.com", "port": "1337" }
@@ -216,10 +216,10 @@ the settings can be accessed that way:
 ```ruby
 require 'fwissr'
 
-Fwissr['/my_app/database/host']
+Fwissr['/my_app/database/slave/host']
 # => "db.my_app.com"
 
-Fwissr['/my_app/database/port']
+Fwissr['/my_app/database/slave/port']
 # => "1337"
 ```
 
@@ -244,7 +244,7 @@ The `_id` document field is the setting key, and the `value` document field is t
 For example:
 
 ```
-> db["my_app.master"].find()
+> db["my_app.stuff"].find()
 { "_id" : "foo", "value" : "bar" }
 { "_id" : "database", "value" : { "host": "db.my_app.com", "port": "1337" } }
 ```
@@ -252,13 +252,13 @@ For example:
 ```ruby
 require 'fwissr'
 
-Fwissr['/my_app/master/foo']
+Fwissr['/my_app/stuff/foo']
 # => "bar"
 
-Fwissr['/my_app/master/database']
+Fwissr['/my_app/stuff/database']
 # => { "host": "db.my_app.com", "port": "1337" }
 
-Fwissr['/my_app/master/database/port']
+Fwissr['/my_app/stuff/database/port']
 # => "1337"
 ```
 
@@ -268,7 +268,7 @@ As with configuration files you can use dots in collection name to define a path
 Refreshing registry
 ===================
 
-Enable registry auto-update with the `refresh` setting for sources.
+Enable registry auto-update with the `refresh` source setting.
 
 For example:
 
@@ -277,13 +277,13 @@ For example:
    "fwissr_sources": [
         { "filepath": "/etc/my_app/my_app.json" },
         { "filepath": "/etc/my_app/stuff.json", "refresh": true },
-        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "global" },
+        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "production" },
         { "mongodb": "mongodb://db1.example.net/my_app", "collection": "config", "refresh": true },
    ],
 }
 ```
 
-The `/etc/my_app/my_app.json` configuration file and the `global` mongodb collection are read only once when global registry is accessed for the first time, whereas the settings holded by the `/etc/my_app/stuff.json` configuration file and the `config` mongodb collection are expired periodically and re-fetched.
+The `/etc/my_app/my_app.json` configuration file and the `production` mongodb collection are read only once when global registry is accessed for the first time, whereas the settings holded by the `/etc/my_app/stuff.json` configuration file and the `config` mongodb collection are expired periodically and re-fetched.
 
 The default freshness is 15 seconds, but you can change it with the `fwissr_refresh_period` setting:
 
@@ -292,7 +292,7 @@ The default freshness is 15 seconds, but you can change it with the `fwissr_refr
    "fwissr_sources": [
         { "filepath": "/etc/my_app/my_app.json" },
         { "filepath": "/etc/my_app/stuff.json", "refresh": true },
-        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "global" },
+        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "production" },
         { "mongodb": "mongodb://db1.example.net/my_app", "collection": "config", "refresh": true },
    ],
    "fwissr_refresh_period": 60,
@@ -338,7 +338,7 @@ registry = Fwissr::Registry.new('refresh_period' => 20)
 # add configuration sources to registry
 registry.add_source(Fwissr::Source.from_settings({ 'filepath': '/etc/my_app/my_app.json' }))
 registry.add_source(Fwissr::Source.from_settings({ 'filepath': '/etc/my_app/stuff.json', 'refresh': true }))
-registry.add_source(Fwissr::Source.from_settings({ 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'global' }))
+registry.add_source(Fwissr::Source.from_settings({ 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'production' }))
 registry.add_source(Fwissr::Source.from_settings({ 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config', 'refresh': true }))
 
 registry['/stuff/foo']
