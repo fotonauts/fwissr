@@ -2,3 +2,27 @@ Fwissr
 ======
 
 The configuration registry tool from Fotonauts.
+
+Install
+=======
+
+    $ [sudo] gem install fwissr
+
+Or add it to your `Gemfile` and use `bundler` worlflow.
+
+Setup
+=====
+
+@TODO
+
+Usage
+=====
+
+@TODO
+
+Credits
+=======
+
+The Fotonauts team: http://www.fotopedia.com
+
+Copyright (c) 2013 Fotonauts released under the MIT license.
