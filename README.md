@@ -89,15 +89,15 @@ Provide additional configuration files with the `fwissr_sources` setting in `fwi
 }
 ```
 
-In that case, the keys for that configuration will be prefixed with `my_app`.
+In that case, the settings for that configuration will be prefixed with `/my_app`.
 
-For example, with `/etc/my_app.json` being:
+For example, with that `/etc/my_app.json`:
 
 ```json
 { "foo": "bar", "bar": "baz" }
 ```
 
-the keys can be accessed like that:
+the settings can be accessed that way:
 
 ```ruby
 require 'fwissr'
@@ -146,7 +146,7 @@ and `/mnt/my_app/conf/credentials.json`:
 { "key": "i5qw64816c", "code": "448e4wef161" }
 ```
 
-the keys can be accessed like that:
+the settings can be accessed like that:
 
 ```ruby
 require 'fwissr'
@@ -165,10 +165,10 @@ Fwissr['/credentials/key']
 ```
 
 
-File name mapping to keys
-=========================
+File name mapping to setting path
+=================================
 
-Use dots in file name to define a path for configuration keys.
+Use dots in file name to define a path for configuration settings.
 
 For example:
 
@@ -186,7 +186,7 @@ with `/etc/my_app.database.json` being:
 { "host": "db.my_app.com", "port": "1337" }
 ```
 
-the keys can be accessed like that:
+the settings can be accessed like that:
 
 ```ruby
 require 'fwissr'
@@ -212,7 +212,7 @@ You can define a mongob collection as a configuration source:
 }
 ```
 
-Each document in the collection is a setting for that configuration, and as with configuration files you can use dots in collection name to define a path for configuration keys.
+Each document in the collection is a setting for that configuration, and as with configuration files you can use dots in collection name to define a path for configuration settings.
 
 The `_id` document field is the setting key, and the `value` document field is the setting value.
 
