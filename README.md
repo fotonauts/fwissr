@@ -20,7 +20,7 @@ Usage
 Create the main `fwissr.json` configuration file in either `/etc/fwissr/` or `~/.fwissr/` directory:
 
 ```json
-{ "foo" : "bar", "fart" : { "big" : true, "sounds": [ "pRrrraaa", "pshiiiiii" ] } }
+{ "foo" : "bar", "horn" : { "loud" : true, "sounds": [ "TUuuUuuuu", "tiiiiiiIIiii" ] } }
 ```
 
 In your application, you can access `fwissr`'s global registry that way:
@@ -31,14 +31,14 @@ require 'fwissr'
 Fwissr['/foo']
 # => "bar"
 
-Fwissr['/fart']
-# => { "big" => true, "sounds" => [ "pRrrraaa", "pshiiiiii" ] }
+Fwissr['/horn']
+# => { "loud" => true, "sounds" => [ "TUuuUuuuu", "tiiiiiiIIiii" ] }
 
-Fwissr['/fart/big']
+Fwissr['/horn/loud']
 # => true
 
-Fwissr['/fart/sounds']
-# => [ "pRrrraaa", "pshiiiiii" ]
+Fwissr['/horn/sounds']
+# => [ "TUuuUuuuu", "tiiiiiiIIiii" ]
 ```
 
 In bash you can call the `fwissr` tool:
@@ -48,16 +48,16 @@ $ fwissr /foo
 bar
 
 # json output
-$ fwissr -j /fart
-{ "big" : true, "sounds": [ "pRrrraaa", "pshiiiiii" ] }
+$ fwissr -j /horn
+{ "loud" : true, "sounds": [ "TUuuUuuuu", "tiiiiiiIIiii" ] }
 
 # pretty print json output
-$ fwissr -j -p /fart
+$ fwissr -j -p /horn
 {
-  "big": true,
+  "loud": true,
   "sound": [
-    "pRrrraaa",
-    "pshiiiiii"
+    "TUuuUuuuu",
+    "tiiiiiiIIiii"
   ]
 }
 
@@ -65,11 +65,11 @@ $ fwissr -j -p /fart
 # NOTE: yes, that's the same as 'fwissr -jp /'
 $ fwissr --dump -jp
 {
-  "fart": {
-    "big": true,
+  "horn": {
+    "loud": true,
     "sound": [
-      "pRrrraaa",
-      "pshiiiiii"
+      "TUuuUuuuu",
+      "tiiiiiiIIiii"
     ]
   }
 }
