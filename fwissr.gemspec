@@ -4,23 +4,19 @@ spec = Gem::Specification.new do |s|
   s.name        = "fwissr"
   s.version     = Fwissr::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.summary     = "Fotonaut's swissr library and tools."
+  s.summary     = "Fwissr"
   s.description = <<-EOF
   A simple configuration registry tool by Fotonauts.
   EOF
 
-  s.author   = "Fwissr"
+  s.author   = "Fotonauts Team"
   s.homepage = "https://github.com/fotonauts/fwissr"
-  s.email    = "aymerick@fotonauts.com"
+  s.email    = [ "aymerick@fotonauts.com", "oct@fotonauts.com" ]
 
-  s.require_path = "lib"
-  s.bindir       = "bin"
-  s.executables  = %w( fwissr )
-  s.files        = %w( README.md Rakefile ) + Dir["{bin,lib}/**/*"]
-
-  # rdoc
-  s.has_rdoc         = true
-  s.extra_rdoc_files = %w( README.md )
+  s.require_paths = [ "lib" ]
+  s.bindir        = "bin"
+  s.executables   = %w( fwissr )
+  s.files         = %w( LICENSE Rakefile README.md ) + Dir["{bin,lib}/**/*"]
 
   s.add_dependency("yajl-ruby")
   # s.add_dependency('json")
