@@ -1,5 +1,4 @@
 require 'mongo'
-require 'bson_ext'
 require 'uri'
 
 class Fwissr::Source::Mongodb < Fwissr::Source
