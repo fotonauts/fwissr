@@ -346,7 +346,7 @@ registry['/stuff/foo']
 Create a custom source
 ======================
 
-Currently `Fwissr::Source::File` and `Fwissr::Source::Mongodb` are the two kinds of possible registry sources, but you can define your own source
+Currently `Fwissr::Source::File` and `Fwissr::Source::Mongodb` are the two kinds of possible registry sources, but you can define your own source:
 
 
 ```ruby
