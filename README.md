@@ -299,7 +299,7 @@ The default freshness is 30 seconds, but you can change it with the `fwissr_refr
 }
 ```
 
-The refresh is done periodically in a thread.
+The refresh is done periodically in a thread:
 
 ```ruby
 require 'fwissr'
