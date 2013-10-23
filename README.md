@@ -343,6 +343,36 @@ registry['/stuff/foo']
 ```
 
 
+Create a custom source
+======================
+
+Currently `Fwissr::Source::File` and `Fwissr::Source::Mongodb` are the two kinds of possible registry sources, but you can define your own source
+
+
+```ruby
+class MyFwissrSource < Fwissr::Source
+
+  def initiatize(db_handler, options = { })
+    super(options)
+
+    @db_handler = db_handler
+  end
+
+  def fetch_conf
+    @db_handler.find('my_conf').to_hash
+    # => { 'foo' => [ 'bar', 'baz' ] }
+  end
+
+end # class MyFwissrSource
+
+registry = Fwissr::Registry.new('refresh_period' => 20)
+registry.add_source(MyFwissrSource.new(my_db_handler, 'refresh' => true))
+
+registry['/foo']
+# => [ 'bar', 'baz' ]
+```
+
+
 Credits
 =======
 
