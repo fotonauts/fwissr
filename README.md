@@ -352,7 +352,7 @@ Currently `Fwissr::Source::File` and `Fwissr::Source::Mongodb` are the two kinds
 ```ruby
 class MyFwissrSource < Fwissr::Source
 
-  def initiatize(db_handler, options = { })
+  def initialize(db_handler, options = { })
     super(options)
 
     @db_handler = db_handler
