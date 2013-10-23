@@ -245,7 +245,7 @@ module Fwissr
     def merge_conf!(to_hash, other_hash)
       other_hash.each_pair do |k,v|
         tv = to_hash[k]
-        to_hash[k] = tv.is_a?(Hash) && v.is_a?(Hash) ? self.merge_conf(tv, v) : v
+        to_hash[k] = (tv.is_a?(Hash) && v.is_a?(Hash)) ? self.merge_conf(tv, v) : v
       end
       to_hash
     end

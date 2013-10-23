@@ -14,10 +14,6 @@ describe Fwissr do
     delete_tmp_mongo_db
   end
 
-  after(:each) do
-    Delorean.back_to_the_present
-  end
-
   it "manages a global registry" do
     # setup
     setup_global_conf

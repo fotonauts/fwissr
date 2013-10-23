@@ -5,7 +5,7 @@ module Fwissr
   class Registry
 
     # refresh period in seconds
-    DEFAULT_REFRESH_PERIOD = 15
+    DEFAULT_REFRESH_PERIOD = 30
 
     #
     # API
@@ -16,28 +16,28 @@ module Fwissr
     def initialize(options = { })
       @refresh_period = options['refresh_period'] || DEFAULT_REFRESH_PERIOD
 
-      @sources   = [ ]
-      @registry  = nil
-      @last_load = nil
+      @registry = { }
+      @sources  = [ ]
 
-      @semaphore      = Mutex.new
-      @is_refreshing  = false
+      # mutex for @registry and @sources
+      @semaphore = Mutex.new
+
       @refresh_thread = nil
     end
 
     def add_source(source)
-      @sources << source
+      @semaphore.synchronize do
+        @sources << source
 
-      # reset if registry was already accessed
-      self.reset!
+        Fwissr.merge_conf!(@registry, source.get_conf)
+      end
+
+      self.ensure_refresh_thread
     end
 
-    def reset!
-      @registry = nil
-
-      @sources.each do |source|
-        source.reset!
-      end
+    def reload!
+      self.reset!
+      self.load!
     end
 
     def get(key)
@@ -47,27 +47,25 @@ module Fwissr
       # remove first empty part
       key_ary.shift if (key_ary.first == '')
 
-      cur_hash = self.registry
+      cur_hash = self.registry.dup
       key_ary.each do |key_part|
         cur_hash = cur_hash[key_part]
         return nil if cur_hash.nil?
       end
 
-      cur_hash.freeze
-
-      cur_hash
+      cur_hash.dup
     end
 
     alias :[] :get
 
     def keys
       result = [ ]
-      _keys(result, [ ], registry)
+      _keys(result, [ ], self.registry.dup)
       result.sort
     end
 
     def dump
-      self.registry
+      self.registry.dup
     end
 
 
@@ -75,59 +73,50 @@ module Fwissr
     # PRIVATE
     #
 
-    def is_fresh?
-      @registry && @last_load && ((Time.now - @last_load) < @refresh_period)
-    end
-
-    def is_refreshing?
-      (@is_refreshing == true)
-    end
-
-    def must_refresh?
-      @refresh_period && (@refresh_period > 0) && !self.is_fresh? && !self.is_refreshing?
-    end
-
     def refresh_thread
       @refresh_thread
     end
 
-    def refresh!
+    def have_refreshable_source?
       @semaphore.synchronize do
-        if self.must_refresh?
-          if @registry.nil?
-            # load synchronously for the first time
-            self.load!
-          else
-            # refresh asynchronously
-            @is_refreshing = true
-            @refresh_thread = Thread.new do
-              begin
-                self.load!
-              ensure
-                @is_refreshing = false
-              end
-            end
-          end
+        !@sources.find { |source| source.can_refresh? }.nil?
+      end
+    end
+
+    def ensure_refresh_thread
+      # check refresh thread state
+      if ((@refresh_period > 0) && self.have_refreshable_source?) && (!@refresh_thread || !@refresh_thread.alive?)
+        # (re)start refresh thread
+        @refresh_thread = Thread.new do
+          sleep(@refresh_period)
+          self.load!
+        end
+      end
+    end
+
+    def reset!
+      @semaphore.synchronize do
+        @registry = { }
+
+        @sources.each do |source|
+          source.reset!
         end
       end
     end
 
     def load!
-      result = { }
+      @semaphore.synchronize do
+        @registry = { }
 
-      @sources.each do |source|
-        source_conf = source.get_conf
-        result = Fwissr.merge_conf!(result, source_conf)
+        @sources.each do |source|
+          source_conf = source.get_conf
+          Fwissr.merge_conf!(@registry, source_conf)
+        end
       end
-
-      @registry  = result
-      @last_load = Time.now
     end
 
     def registry
-      if self.must_refresh?
-        self.refresh!
-      end
+      self.ensure_refresh_thread
 
       @registry
     end

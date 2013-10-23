@@ -285,7 +285,7 @@ For example:
 
 The `/etc/my_app/my_app.json` configuration file and the `production` mongodb collection are read only once when global registry is accessed for the first time, whereas the settings holded by the `/etc/my_app/stuff.json` configuration file and the `config` mongodb collection are expired periodically and re-fetched.
 
-The default freshness is 15 seconds, but you can change it with the `fwissr_refresh_period` setting:
+The default freshness is 30 seconds, but you can change it with the `fwissr_refresh_period` setting:
 
 ```json
 {
@@ -299,7 +299,7 @@ The default freshness is 15 seconds, but you can change it with the `fwissr_refr
 }
 ```
 
-The refresh is triggered when accessing the global registry, and it is done asynchronously in a thread:
+The refresh is done periodically in a thread.
 
 ```ruby
 require 'fwissr'
@@ -311,12 +311,6 @@ Fwissr['/stuff/foo']
 
 # Wait 2 minutes
 sleep(120)
-
-# This following registry access triggers an async refresh in a thread, and the old value is still returned for now
-Fwissr['/stuff/foo']
-# => "bar"
-
-# > Async refresh is over
 
 # The new value is now in the registry
 Fwissr['/stuff/foo']
