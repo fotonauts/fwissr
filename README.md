@@ -20,7 +20,10 @@ Usage
 Create the main `fwissr.json` configuration file in either `/etc/fwissr/` or `~/.fwissr/` directory:
 
 ```json
-{ "foo" : "bar", "horn" : { "loud" : true, "sounds": [ "TUuuUuuuu", "tiiiiiiIIiii" ] } }
+{
+  "foo" : "bar",
+  "horn" : { "loud" : true, "sounds": [ "TUuuUuuuu", "tiiiiiiIIiii" ] }
+}
 ```
 
 In your application, you can access `fwissr`'s global registry that way:
@@ -83,9 +86,9 @@ Provide additional configuration files with the `fwissr_sources` setting in `fwi
 
 ```json
 {
-   "fwissr_sources": [
-     { "filepath": "/etc/my_app.json" },
-   ],
+  "fwissr_sources": [
+    { "filepath": "/etc/my_app.json" }
+  ]
 }
 ```
 
@@ -116,9 +119,9 @@ You can bypass that behaviour with the `top_level` setting:
 
 ```json
 {
-   "fwissr_sources": [
-     { "filepath": "/etc/my_app.json", "top_level": true },
-   ],
+  "fwissr_sources": [
+    { "filepath": "/etc/my_app.json", "top_level": true }
+  ]
 }
 ```
 
@@ -147,9 +150,9 @@ If the `filepath` setting is a directory, then all `.json` and `.yaml` files in 
 
 ```json
 {
-   "fwissr_sources": [
-     { "filepath": "/mnt/my_app/conf/" },
-   ],
+  "fwissr_sources": [
+    { "filepath": "/mnt/my_app/conf/" },
+  ],
 }
 ```
 
@@ -199,9 +202,9 @@ For example:
 
 ```json
 {
-   "fwissr_sources": [
-     { "filepath": "/etc/my_app.database.slave.json" },
-   ],
+  "fwissr_sources": [
+    { "filepath": "/etc/my_app.database.slave.json" }
+  ]
 }
 ```
 
@@ -231,9 +234,9 @@ You can define a mongob collection as a configuration source:
 
 ```json
 {
-   "fwissr_sources": [
-        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "config" },
-   ],
+  "fwissr_sources": [
+    { "mongodb": "mongodb://db1.example.net/my_app", "collection": "config" }
+  ]
 }
 ```
 
@@ -274,28 +277,28 @@ For example:
 
 ```json
 {
-   "fwissr_sources": [
-        { "filepath": "/etc/my_app/my_app.json" },
-        { "filepath": "/etc/my_app/stuff.json", "refresh": true },
-        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "production" },
-        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "config", "refresh": true },
-   ],
+  "fwissr_sources": [
+    { "filepath": "/etc/my_app/my_app.json" },
+    { "filepath": "/etc/my_app/stuff.json", "refresh": true },
+    { "mongodb": "mongodb://db1.example.net/my_app", "collection": "production" },
+    { "mongodb": "mongodb://db1.example.net/my_app", "collection": "config", "refresh": true }
+  ]
 }
 ```
 
-The `/etc/my_app/my_app.json` configuration file and the `production` mongodb collection are read only once when global registry is accessed for the first time, whereas the settings holded by the `/etc/my_app/stuff.json` configuration file and the `config` mongodb collection are expired periodically and re-fetched.
+The `/etc/my_app/my_app.json` configuration file and the `production` mongodb collection are read only once, whereas the settings holded by the `/etc/my_app/stuff.json` configuration file and the `config` mongodb collection are expired periodically and re-fetched.
 
 The default freshness is 30 seconds, but you can change it with the `fwissr_refresh_period` setting:
 
 ```json
 {
-   "fwissr_sources": [
-        { "filepath": "/etc/my_app/my_app.json" },
-        { "filepath": "/etc/my_app/stuff.json", "refresh": true },
-        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "production" },
-        { "mongodb": "mongodb://db1.example.net/my_app", "collection": "config", "refresh": true },
+  "fwissr_sources": [
+    { "filepath": "/etc/my_app/my_app.json" },
+    { "filepath": "/etc/my_app/stuff.json", "refresh": true },
+    { "mongodb": "mongodb://db1.example.net/my_app", "collection": "production" },
+    { "mongodb": "mongodb://db1.example.net/my_app", "collection": "config", "refresh": true }
    ],
-   "fwissr_refresh_period": 60,
+  "fwissr_refresh_period": 60
 }
 ```
 
