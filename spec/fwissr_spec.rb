@@ -40,6 +40,15 @@ describe Fwissr do
     Fwissr['/pa/ta'].should == 'teu'
   end
 
+  it "does not care if leading slash is missing" do
+    # setup
+    setup_global_conf
+
+    Fwissr['foo'].should == 'bar'
+    Fwissr['cam'].should == { 'en' => { 'bert' => { 'pim' => { 'pam' => [ 'pom', 'pum' ] } } } }
+    Fwissr['cam/en/bert/pim/pam'].should == [ 'pom', 'pum' ]
+  end
+
   it "handles fwissr_refresh_period options" do
     Fwissr.global_registry.refresh_period.should == 5
   end

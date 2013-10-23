@@ -86,7 +86,7 @@ describe Fwissr::Source::Mongodb do
     conf_fetched.should == test_conf
   end
 
-  it "does refresh conf is allowed to" do
+  it "does refresh conf if allowed to" do
     # create collection
     test_conf = {
       'foo' => 'bar',

@@ -127,7 +127,7 @@ describe Fwissr::Source::File do
     conf_fetched.should == test_conf
   end
 
-  it "does refresh conf is allowed to" do
+  it "does refresh conf if allowed to" do
     # create conf file
     test_conf = {
       'foo' => 'bar',
