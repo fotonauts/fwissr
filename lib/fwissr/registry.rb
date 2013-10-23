@@ -53,7 +53,9 @@ module Fwissr
         return nil if cur_hash.nil?
       end
 
-      cur_hash.dup
+      cur_hash.freeze
+
+      cur_hash
     end
 
     alias :[] :get
