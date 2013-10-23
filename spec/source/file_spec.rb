@@ -127,7 +127,7 @@ describe Fwissr::Source::File do
     conf_fetched.should == test_conf
   end
 
-  it "should refresh conf is allowed to" do
+  it "does refresh conf is allowed to" do
     # create conf file
     test_conf = {
       'foo' => 'bar',
@@ -153,7 +153,7 @@ describe Fwissr::Source::File do
     conf_fetched.should == { 'test' => test_conf_modified }
   end
 
-  it "should NOT refresh conf if not allowed" do
+  it "does NOT refresh conf if not allowed" do
     # create conf file
     test_conf = {
       'foo' => 'bar',
@@ -177,6 +177,33 @@ describe Fwissr::Source::File do
     # test
     conf_fetched = source.get_conf
     conf_fetched.should == { 'test' => test_conf }
+  end
+
+  it "resets itself" do
+    # create conf file
+    test_conf = {
+      'foo' => 'bar',
+      'cam' => { 'en' => 'bert'},
+    }
+    create_tmp_conf_file("test.json", test_conf)
+
+    source = Fwissr::Source::File.from_path(tmp_conf_file("test.json"))
+    conf_fetched = source.get_conf
+    conf_fetched.should == { 'test' => test_conf }
+
+    # change file
+    delete_tmp_conf_files
+
+    test_conf_modified = {
+      'foo' => 'pouet',
+      'cam' => { 'en' => 'bert'},
+    }
+    create_tmp_conf_file("test.json", test_conf_modified)
+
+    # test
+    source.get_conf.should == { 'test' => test_conf }
+    source.reset!
+    source.get_conf.should == { 'test' => test_conf_modified }
   end
 
 end

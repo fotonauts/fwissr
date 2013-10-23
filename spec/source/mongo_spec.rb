@@ -86,7 +86,7 @@ describe Fwissr::Source::Mongodb do
     conf_fetched.should == test_conf
   end
 
-  it "should refresh conf is allowed to" do
+  it "does refresh conf is allowed to" do
     # create collection
     test_conf = {
       'foo' => 'bar',
@@ -111,7 +111,7 @@ describe Fwissr::Source::Mongodb do
     conf_fetched.should == { 'test' => test_conf_modified }
   end
 
-  it "should NOT refresh conf if not allowed" do
+  it "does NOT refresh conf if not allowed" do
     # create collection
     test_conf = {
       'foo' => 'bar',
@@ -134,6 +134,32 @@ describe Fwissr::Source::Mongodb do
     # test
     conf_fetched = source.get_conf
     conf_fetched.should == { 'test' => test_conf }
+  end
+
+  it "resets itself" do
+    # create collection
+    test_conf = {
+      'foo' => 'bar',
+      'cam' => { 'en' => 'bert'},
+    }
+    create_tmp_mongo_col('test', test_conf)
+
+    source = Fwissr::Source.from_settings({ 'mongodb' => tmp_mongo_db_uri, 'collection' => 'test' })
+    conf_fetched = source.get_conf
+    conf_fetched.should == { 'test' => test_conf }
+
+    # update conf
+    delete_tmp_mongo_db
+
+    test_conf_modified = {
+      'foo' => 'meuh',
+    }
+    create_tmp_mongo_col('test', test_conf_modified)
+
+    # test
+    source.get_conf.should == { 'test' => test_conf }
+    source.reset!
+    source.get_conf.should == { 'test' => test_conf_modified }
   end
 
 end

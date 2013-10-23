@@ -27,6 +27,17 @@ module Fwissr
 
     def add_source(source)
       @sources << source
+
+      # reset if registry was already accessed
+      self.reset!
+    end
+
+    def reset!
+      @registry = nil
+
+      @sources.each do |source|
+        source.reset!
+      end
     end
 
     def get(key)
@@ -80,18 +91,18 @@ module Fwissr
       @refresh_thread
     end
 
-    def do_refresh
+    def refresh!
       @semaphore.synchronize do
         if self.must_refresh?
           if @registry.nil?
             # load synchronously for the first time
-            self.load_registry
+            self.load!
           else
             # refresh asynchronously
             @is_refreshing = true
             @refresh_thread = Thread.new do
               begin
-                self.load_registry
+                self.load!
               ensure
                 @is_refreshing = false
               end
@@ -101,15 +112,7 @@ module Fwissr
       end
     end
 
-    def registry
-      if self.must_refresh?
-        self.do_refresh
-      end
-
-      @registry
-    end
-
-    def load_registry
+    def load!
       result = { }
 
       @sources.each do |source|
@@ -119,6 +122,14 @@ module Fwissr
 
       @registry  = result
       @last_load = Time.now
+    end
+
+    def registry
+      if self.must_refresh?
+        self.refresh!
+      end
+
+      @registry
     end
 
     # helper for #keys

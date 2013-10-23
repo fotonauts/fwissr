@@ -30,6 +30,11 @@ class Fwissr::Source
     @conf = nil
   end
 
+  # reset source
+  def reset!
+    @conf = nil
+  end
+
   # source can be refreshed ?
   def can_refresh?
     @options && (@options['refresh'] == true)

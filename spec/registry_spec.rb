@@ -165,4 +165,69 @@ describe Fwissr::Registry do
     registry.dump.should == { 'test' => test_conf_modified }
   end
 
+  it "resets itself" do
+    # create conf file
+    test_conf = {
+      'foo' => 'bar',
+      'jean' => [ 'bon', 'rage' ],
+      'cam' => { 'en' => { 'bert' => 'coulant' } },
+    }
+    create_tmp_conf_file('test.json', test_conf)
+
+    registry = Fwissr::Registry.new()
+    registry.add_source(Fwissr::Source::File.new(tmp_conf_file('test.json')))
+    registry.dump.should == { 'test' => test_conf }
+
+    # modify conf file
+    delete_tmp_conf_files
+
+    test_conf_modified = {
+      'pouet' => 'meuh',
+    }
+    create_tmp_conf_file('test.json', test_conf_modified)
+
+    # test
+    registry.dump.should == { 'test' => test_conf }
+    registry.reset!
+    registry.dump.should == { 'test' => test_conf_modified }
+  end
+
+  it "resets itself when a new source is added" do
+    # create conf file
+    test_conf = {
+      'foo' => 'bar',
+      'jean' => [ 'bon', 'rage' ],
+      'cam' => { 'en' => { 'bert' => 'coulant' } },
+    }
+    create_tmp_conf_file('test.json', test_conf)
+
+    registry = Fwissr::Registry.new()
+    registry.add_source(Fwissr::Source::File.new(tmp_conf_file('test.json')))
+    registry.dump.should == { 'test' => test_conf }
+
+    # modify conf file
+    delete_tmp_conf_files
+
+    test_conf_modified = {
+      'pouet' => 'meuh',
+    }
+    create_tmp_conf_file('test.json', test_conf_modified)
+
+    # test that registry did not changed
+    registry.dump.should == { 'test' => test_conf }
+
+    # add new source
+    test2_conf = {
+      'foo' => 'bar',
+      'jean' => [ 'bon', 'rage' ],
+      'cam' => { 'en' => { 'bert' => 'coulant' } },
+    }
+    create_tmp_conf_file('test2.json', test2_conf)
+
+    registry.add_source(Fwissr::Source::File.new(tmp_conf_file('test2.json')))
+
+    # check
+    registry.dump.should == { 'test' => test_conf_modified, 'test2' => test2_conf }
+  end
+
 end
