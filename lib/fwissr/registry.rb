@@ -90,8 +90,10 @@ module Fwissr
       if ((@refresh_period > 0) && self.have_refreshable_source?) && (!@refresh_thread || !@refresh_thread.alive?)
         # (re)start refresh thread
         @refresh_thread = Thread.new do
-          sleep(@refresh_period)
-          self.load!
+          while(true) do
+            sleep(@refresh_period)
+            self.load!
+          end
         end
       end
     end

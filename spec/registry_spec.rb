@@ -194,6 +194,19 @@ describe Fwissr::Registry do
 
     # refresh done
     registry.dump.should == { 'test' => test_conf_modified }
+
+    # modify conf file
+    delete_tmp_conf_files
+
+    test_conf_modified_2 = {
+      'pouet' => 'tagada',
+    }
+    create_tmp_conf_file('test.json', test_conf_modified_2)
+
+    sleep(3)
+
+    # refresh done
+    registry.dump.should == { 'test' => test_conf_modified_2 }
   end
 
   it "reloads" do
