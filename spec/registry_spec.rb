@@ -236,7 +236,7 @@ describe Fwissr::Registry do
     registry.dump.should == { 'test' => test_conf_modified }
   end
 
-  it "be frozen" do
+  it "is frozen" do
     # create conf files
     test_conf = {
       'foo' => 'bar',
