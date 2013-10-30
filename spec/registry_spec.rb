@@ -236,4 +236,39 @@ describe Fwissr::Registry do
     registry.dump.should == { 'test' => test_conf_modified }
   end
 
+  it "be frozen" do
+    # create conf files
+    test_conf = {
+      'foo' => 'bar',
+      'cam' => { 'en' => 'bert'},
+    }
+    create_tmp_conf_file('test.json', test_conf)
+
+    test_conf = {
+      'foo' => 'baz',
+      'cam' => { 'et' => 'rat'},
+      'jean' => 'bon',
+    }
+    create_tmp_conf_file('test2.json', test_conf)
+
+    # test
+    registry = Fwissr::Registry.new()
+    registry.add_source(Fwissr::Source::File.new(tmp_conf_file('test.json'), 'top_level' => true))
+
+    # check
+    registry['/foo'].should == 'bar'
+    registry.registry.should be_frozen
+    registry['/cam'].should be_frozen
+    lambda { registry['/cam']['heu'] = 'lotte' }.should raise_error(/can't modify frozen Hash/)
+
+    # test
+    registry.add_source(Fwissr::Source::File.new(tmp_conf_file('test2.json'), 'top_level' => true))
+
+    # check
+    registry['/foo'].should == 'baz' # NOTE: reloaded after a call to #add_source
+    registry.registry.should be_frozen
+    registry['/cam'].should be_frozen
+    lambda { registry['/cam']['heu'] = 'lotte' }.should raise_error(/can't modify frozen Hash/)
+  end
+
 end

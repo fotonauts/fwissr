@@ -28,8 +28,15 @@ module Fwissr
     def add_source(source)
       @semaphore.synchronize do
         @sources << source
+      end
 
-        Fwissr.merge_conf!(@registry, source.get_conf)
+      if @registry.frozen?
+        # already frozen, must reload everything
+        self.reload!
+      else
+        @semaphore.synchronize do
+          Fwissr.merge_conf!(@registry, source.get_conf)
+        end
       end
 
       self.ensure_refresh_thread
@@ -47,13 +54,11 @@ module Fwissr
       # remove first empty part
       key_ary.shift if (key_ary.first == '')
 
-      cur_hash = self.registry.dup
+      cur_hash = self.registry
       key_ary.each do |key_part|
         cur_hash = cur_hash[key_part]
         return nil if cur_hash.nil?
       end
-
-      cur_hash.freeze
 
       cur_hash
     end
@@ -62,12 +67,12 @@ module Fwissr
 
     def keys
       result = [ ]
-      _keys(result, [ ], self.registry.dup)
+      _keys(result, [ ], self.registry)
       result.sort
     end
 
     def dump
-      self.registry.dup
+      self.registry
     end
 
 
@@ -98,6 +103,14 @@ module Fwissr
       end
     end
 
+    def ensure_frozen
+      if !@registry.frozen?
+        @semaphore.synchronize do
+          Fwissr.deep_freeze(@registry)
+        end
+      end
+    end
+
     def reset!
       @semaphore.synchronize do
         @registry = { }
@@ -121,6 +134,7 @@ module Fwissr
 
     def registry
       self.ensure_refresh_thread
+      self.ensure_frozen
 
       @registry
     end

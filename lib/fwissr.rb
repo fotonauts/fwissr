@@ -250,6 +250,20 @@ module Fwissr
       to_hash
     end
 
+    # simple deep freezer
+    def deep_freeze(obj)
+      if obj.is_a?(Hash)
+        obj.each do |k, v|
+          self.deep_freeze(v)
+        end
+      elsif obj.is_a?(Array)
+        obj.each do |v|
+          self.deep_freeze(v)
+        end
+      end
+
+      obj.freeze
+    end
   end # class << self
 
 end # module Fwissr
