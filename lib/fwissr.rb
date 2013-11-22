@@ -146,23 +146,21 @@ module Fwissr
         result = Fwissr::Registry.new('refresh_period' => self.main_conf['fwissr_refresh_period'])
 
         # check main conf files
-        if !File.exists?(self.main_conf_file) && !File.exists?(self.main_user_conf_file)
-          raise "No fwissr conf file found: #{self.main_conf_file} | #{self.main_user_conf_file}"
-        end
+        if File.exists?(self.main_conf_file) || File.exists?(self.main_user_conf_file)
+          # setup main conf files sources
+          if File.exists?(self.main_conf_file)
+            result.add_source(Fwissr::Source.from_settings({ 'filepath' => self.main_conf_file }))
+          end
 
-        # setup main conf files sources
-        if File.exists?(self.main_conf_file)
-          result.add_source(Fwissr::Source.from_settings({ 'filepath' => self.main_conf_file }))
-        end
+          if File.exists?(self.main_user_conf_file)
+            result.add_source(Fwissr::Source.from_settings({ 'filepath' => self.main_user_conf_file }))
+          end
 
-        if File.exists?(self.main_user_conf_file)
-          result.add_source(Fwissr::Source.from_settings({ 'filepath' => self.main_user_conf_file }))
-        end
-
-        # setup additional sources
-        if !self.main_conf['fwissr_sources'].nil?
-          self.main_conf['fwissr_sources'].each do |source_setting|
-            result.add_source(Fwissr::Source.from_settings(source_setting))
+          # setup additional sources
+          if !self.main_conf['fwissr_sources'].nil?
+            self.main_conf['fwissr_sources'].each do |source_setting|
+              result.add_source(Fwissr::Source.from_settings(source_setting))
+            end
           end
         end
 
