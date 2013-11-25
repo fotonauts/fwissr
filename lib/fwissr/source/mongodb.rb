@@ -6,7 +6,7 @@ rescue LoadError
   begin
     require 'mongo'
   rescue LoadError
-    raise "Can't find any suitable mongodb driver: please install 'mongo' or 'moped' gem"
+    raise "[fwissr] Can't find any suitable mongodb driver: please install 'mongo' or 'moped' gem"
   end
 end
 
