@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'mongo'
 
 $:.unshift(File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib')))
 require 'fwissr'
@@ -116,15 +115,15 @@ end
 
 # create a temporary conf collection
 def create_tmp_mongo_col(name, conf)
-  client = ::Mongo::MongoClient.from_uri(tmp_mongo_db_uri)
-  col = client.db(tmp_mongo_db).create_collection(name)
+  conn = Fwissr::Source::Mongodb.connection_for_uri(tmp_mongo_db_uri)
+  conn.create_collection(name)
   conf.each do |key, val|
-    col.insert({'_id' => key, 'value' => val})
+    conn.insert(name, {'_id' => key, 'value' => val})
   end
 end
 
 # delete temporary mongodb database
 def delete_tmp_mongo_db
-  client = ::Mongo::MongoClient.from_uri(tmp_mongo_db_uri)
-  client.drop_database(tmp_mongo_db)
+  conn = Fwissr::Source::Mongodb.connection_for_uri(tmp_mongo_db_uri)
+  conn.drop_database(tmp_mongo_db)
 end

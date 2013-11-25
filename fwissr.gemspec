@@ -19,9 +19,14 @@ spec = Gem::Specification.new do |s|
   s.files         = %w( LICENSE Rakefile README.md ) + Dir["{bin,lib}/**/*"]
 
   s.add_dependency("yajl-ruby")
-  # s.add_dependency('json")
-  s.add_dependency("mongo")
-  s.add_dependency("bson_ext")
+
+  # Driver: mongo
+  # s.add_dependency("mongo", '~> 1.9')
+  # s.add_dependency("bson_ext")
+
+  # Driver: moped
+  # s.add_dependency("moped", '~> 1.5')
+  # s.add_dependency("moped", "~> 2.0.beta3")
 
   s.add_development_dependency("rspec")
 end

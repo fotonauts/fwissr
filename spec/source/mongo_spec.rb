@@ -16,7 +16,7 @@ describe Fwissr::Source::Mongodb do
 
     # check
     source.class.should == Fwissr::Source::Mongodb
-    source.db_name.should == tmp_mongo_db
+    source.conn.db_name.should == tmp_mongo_db
     source.collection_name.should == 'test'
   end
 
