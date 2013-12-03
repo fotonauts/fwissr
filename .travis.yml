@@ -6,7 +6,5 @@ rvm:
   - ruby-head
 services:
   - mongodb
-before_install:
-  - gem install mongo
 notifications:
   email: true

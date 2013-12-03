@@ -29,4 +29,5 @@ spec = Gem::Specification.new do |s|
   # s.add_dependency("moped", "~> 2.0.beta3")
 
   s.add_development_dependency("rspec")
+  s.add_development_dependency("mongo")
 end
