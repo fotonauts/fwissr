@@ -1,0 +1,5 @@
+source "https://rubygems.org"
+
+gemspec :path => "../"
+
+gem "moped", '~> 2.0.beta3'

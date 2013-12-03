@@ -20,14 +20,6 @@ spec = Gem::Specification.new do |s|
 
   s.add_dependency("yajl-ruby")
 
-  # Driver: mongo
-  # s.add_dependency("mongo", '~> 1.9')
-  # s.add_dependency("bson_ext")
-
-  # Driver: moped
-  # s.add_dependency("moped", '~> 1.5')
-  # s.add_dependency("moped", "~> 2.0.beta3")
-
   s.add_development_dependency("rspec")
   s.add_development_dependency("mongo")
 end
