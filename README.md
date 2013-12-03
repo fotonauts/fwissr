@@ -53,7 +53,7 @@ Fwissr['/horn/sounds']
 
 In bash you can call the `fwissr` tool:
 
-```console
+```bash
 $ fwissr /foo
 bar
 
@@ -159,7 +159,7 @@ If the `filepath` setting is a directory then all the configuration files in tha
 {
   "fwissr_sources": [
     { "filepath": "/mnt/my_app/conf/" },
-  ],
+  ]
 }
 ```
 

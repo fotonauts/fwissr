@@ -20,14 +20,14 @@ require 'fwissr/registry'
 # Global Registry
 # ===============
 #
-# Fwissr loads all conf files in main directories: +/etc/fwissr/+ and +~/.fwissr/+.
+# Fwissr loads all conf files in main directories: +/etc/fwissr/+ and +~/.fwissr/+
 #
-# Two conf files are treated differently: +/etc/fwissr/fwissr.json+ and +~/.fwissr/fwissr.json+.
+# Two conf files are treated differently: +/etc/fwissr/fwissr.json+ and +~/.fwissr/fwissr.json+
 #
 # These two main conf files are 'top_level' ones and so their settings are added to global registry root. They can
 # too contain a +fwissr_sources+ setting that is then used to setup additional sources.
 #
-# Global registry is accessed with: {Fwissr#[]}
+# Global registry is accessed with Fwissr#[] method
 #
 # @example +/etc/fwissr/fwissr.json+ file:
 #
@@ -37,7 +37,7 @@ require 'fwissr/registry'
 #      { 'filepath': '/etc/my_app.json' },
 #      { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config', 'refresh': true },
 #    ],
-#    'fwissr_refresh_period': 30,
+#    'fwissr_refresh_period': 30
 # }
 #
 module Fwissr

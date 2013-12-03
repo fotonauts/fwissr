@@ -25,7 +25,7 @@ module Fwissr
       @refresh_thread = nil
     end
 
-    # Param add a source to registry
+    # Add a source to registry
     #
     # @param source [Fwissr::Source] Concrete source instance
     def add_source(source)

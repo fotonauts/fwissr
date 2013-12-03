@@ -16,7 +16,7 @@ class Fwissr::Source::File < Fwissr::Source
       self.new(path, options)
     end
 
-    # Instanciate source
+    # Instanciate source from settings
     #
     # @param settings [Hash] Source settings
     # @return [Fwissr::Source::File] Instance
