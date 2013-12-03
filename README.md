@@ -100,7 +100,7 @@ For example, with that `/etc/my_app.json`:
 { "foo": "bar", "bar": "baz" }
 ```
 
-the settings can be accessed that way:
+settings are accessed that way:
 
 ```ruby
 require 'fwissr'
@@ -140,13 +140,13 @@ Fwissr['/bar']
 # => "baz"
 ```
 
-You can provide `.json` and `.yaml` configuration files.
+Fwissr supports `.json` and `.yaml` configuration files.
 
 
 Directory of configuration files
 ================================
 
-If the `filepath` setting is a directory, then all configuration files in that directory (but NOT in subdirectories) are imported:
+If the `filepath` setting is a directory then all configuration files in that directory (but NOT in subdirectories) are imported:
 
 ```json
 {
@@ -174,7 +174,7 @@ and `/mnt/my_app/conf/credentials.json`:
 { "key": "i5qw64816c", "code": "448e4wef161" }
 ```
 
-the settings can be accessed that way:
+settings are accessed that way:
 
 ```ruby
 require 'fwissr'
@@ -214,7 +214,7 @@ with that `/etc/my_app.database.slave.json`:
 { "host": "db.my_app.com", "port": "1337" }
 ```
 
-the settings can be accessed that way:
+settings are accessed that way:
 
 ```ruby
 require 'fwissr'
