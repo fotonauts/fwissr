@@ -3,6 +3,8 @@ Fwissr
 
 A simple configuration registry tool by Fotonauts.
 
+[![Build Status](https://travis-ci.org/fotonauts/fwissr.png)](https://travis-ci.org/fotonauts/fwissr)
+
 
 Install
 =======
