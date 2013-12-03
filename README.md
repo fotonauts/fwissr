@@ -84,7 +84,7 @@ Additional configuration file
 
 In addition to the main `fwissr.json` configuration file, all files in `/etc/fwissr/` and `~/.fwissr/` directories are automatically loaded. The settings for these additional configurations are prefixed with the file name.
 
-You can provide more configuration files locations with the `fwissr_sources` setting in `fwissr.json`:
+You can provide more configuration file locations with the `fwissr_sources` setting in `fwissr.json`:
 
 ```json
 {
@@ -146,7 +146,7 @@ Fwissr supports `.json` and `.yaml` configuration files.
 Directory of configuration files
 ================================
 
-If the `filepath` setting is a directory then all configuration files in that directory (but NOT in subdirectories) are imported:
+If the `filepath` setting is a directory then all the configuration files in that directory (but NOT in subdirectories) are imported:
 
 ```json
 {
@@ -289,7 +289,7 @@ For example:
 }
 ```
 
-The `/etc/my_app/my_app.json` configuration file and the `production` mongodb collection are read only once, whereas the settings holded by the `/etc/my_app/stuff.json` configuration file and the `config` mongodb collection are expired periodically and re-fetched.
+The `/etc/my_app/my_app.json` configuration file and the `production` mongodb collection are read once, whereas the settings holded by the `/etc/my_app/stuff.json` configuration file and the `config` mongodb collection expire periodically and re-fetched.
 
 The default freshness is 30 seconds, but you can change it with the `fwissr_refresh_period` setting:
 
