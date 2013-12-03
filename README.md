@@ -53,7 +53,7 @@ Fwissr['/horn/sounds']
 
 In bash you can call the `fwissr` tool:
 
-```bash
+```console
 $ fwissr /foo
 bar
 

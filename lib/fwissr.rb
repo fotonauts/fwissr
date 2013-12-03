@@ -20,20 +20,17 @@ require 'fwissr/registry'
 # Global Registry
 # ===============
 #
-# Fwissr loads all conf files in main directories:
-#   - `/etc/fwissr/`
-#   - `~/.fwissr/`
+# Fwissr loads all conf files in main directories: +/etc/fwissr/+ and +~/.fwissr/+.
 #
-# Two main conf files are treated differently:
-#   - `/etc/fwissr/fwissr.json`
-#   - `~/.fwissr/fwissr.json`
+# Two conf files are treated differently: +/etc/fwissr/fwissr.json+ and +~/.fwissr/fwissr.json+.
 #
 # These two main conf files are 'top_level' ones and so their settings are added to global registry root. They can
-# too contain a `fwissr_sources` setting that is then used to setup additional sources.
+# too contain a +fwissr_sources+ setting that is then used to setup additional sources.
 #
-# Example of `/etc/fwissr/fwissr.json` file:
+# Global registry is accessed with: {Fwissr#[]}
 #
-# ```
+# @example +/etc/fwissr/fwissr.json+ file:
+#
 #  {
 #    'fwissr_sources': [
 #      { 'filepath': '/mnt/my_app/conf/' },
@@ -42,9 +39,6 @@ require 'fwissr/registry'
 #    ],
 #    'fwissr_refresh_period': 30,
 # }
-# ```
-#
-# Global registry is accessed with: `Fwissr['/foo/bar']`
 #
 module Fwissr
 
@@ -214,33 +208,26 @@ module Fwissr
       @main_user_conf_file ||= File.join(self.main_user_conf_path, MAIN_CONF_FILE)
     end
 
-    # Accessors to global registry
+    # Global registry accessor
     #
-    # Examples:
-    #   Fwissr['/foo/bar']
-    #   Fwissr.get('/foo/bar')
-    #
-    # @!method [](key)
-    # @!method get(key)
-    [ :[], :get ].each do |meth_name|
-      class_eval <<-EOS, __FILE__, __LINE__
-        def #{meth_name}(key)
-          self.global_registry[key]
-        end
-      EOS
+    # @param key [String] setting key
+    # @return [Object] setting value
+    def [](key)
+      self.global_registry[key]
     end
 
-    # Dumps global registry: `Fwissr.dump`
-    # Dumps global registry keys: `Fwissr.keys`
+    alias :get :[]
+
+    # Dumps global registry keys
     #
-    # @!method keys
-    # @!method dump
-    [ :keys, :dump ].each do |meth_name|
-      class_eval <<-EOS, __FILE__, __LINE__
-        def #{meth_name}
-          self.global_registry.__send__('#{meth_name}')
-        end
-      EOS
+    # @return [Array] Keys list
+    def keys
+      self.global_registry.keys
+    end
+
+    # @return [Hash] The entire registry
+    def dump
+      self.global_registry.dump
     end
 
 
