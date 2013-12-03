@@ -82,9 +82,9 @@ $ fwissr --dump -jp
 Additional configuration file
 =============================
 
-In addition to the main `fwissr.json` configuration ile, all files in `/etc/fwissr/` and `~/.fwissr/` directories are automatically loaded. The settings for these configurations will be prefixed with the file name.
+In addition to the main `fwissr.json` configuration file, all files in `/etc/fwissr/` and `~/.fwissr/` directories are automatically loaded. The settings for these additional configurations are prefixed with the file name.
 
-You can provide too additional configuration files with the `fwissr_sources` setting in `fwissr.json`:
+You can provide more configuration files locations with the `fwissr_sources` setting in `fwissr.json`:
 
 ```json
 {
@@ -140,13 +140,13 @@ Fwissr['/bar']
 # => "baz"
 ```
 
-Note that you can provide `.json` and `.yaml` configuration files.
+You can provide `.json` and `.yaml` configuration files.
 
 
 Directory of configuration files
 ================================
 
-If the `filepath` setting is a directory, then all `.json` and `.yaml` files in that directory (but NOT in subdirectories) will be imported in global registry:
+If the `filepath` setting is a directory, then all configuration files in that directory (but NOT in subdirectories) are imported:
 
 ```json
 {
@@ -266,9 +266,9 @@ Fwissr['/my_app/stuff/database/port']
 # => "1337"
 ```
 
-As with configuration files you can use dots in collection name to define a path for configuration settings. The `top_level` setting is also supported to bypass that behaviour. Note that the `fwissr` collection is by default a `top_level` configuration (as the `/etc/fwissr/fwissr.json` configuration file).
+As with configuration files you can use dots in collection name to define a path for configuration settings. The `top_level` setting is also supported to bypass that behaviour. Note that the `fwissr` collection is by default a `top_level` configuration.
 
-Fwissr supports both the official `mongo` ruby driver and the `mongoid`'s `moped` driver. Don't forget to include one of these gems by yourself.
+Fwissr supports both the official `mongo` ruby driver and the `mongoid`'s `moped` driver. Don't forget to require one of these gems.
 
 
 Refreshing registry
