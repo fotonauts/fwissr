@@ -5,10 +5,12 @@ rvm:
   - 2.0.0
   - ruby-head
 gemfile:
-  - Gemfile
+  - gemfiles/mongo-1.9.gemfile
   - gemfiles/moped-1.5.gemfile
   - gemfiles/moped-2.0.gemfile
 services:
   - mongodb
 notifications:
-  email: true
+  email:
+    recipients:
+      - aymerick@jehanne.org

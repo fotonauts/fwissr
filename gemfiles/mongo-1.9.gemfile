@@ -1,0 +1,6 @@
+source "https://rubygems.org"
+
+gemspec :path => "../"
+
+gem "mongo", '~> 1.9'
+gem "bson_ext"
