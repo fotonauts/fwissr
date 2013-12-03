@@ -16,6 +16,36 @@ require 'fwissr/version'
 require 'fwissr/source'
 require 'fwissr/registry'
 
+#
+# Global Registry
+# ===============
+#
+# Fwissr loads all conf files in main directories:
+#   - `/etc/fwissr/`
+#   - `~/.fwissr/`
+#
+# Two main conf files are treated differently:
+#   - `/etc/fwissr/fwissr.json`
+#   - `~/.fwissr/fwissr.json`
+#
+# These two main conf files are 'top_level' ones and so their settings are added to global registry root. They can
+# too contain a `fwissr_sources` setting that is then used to setup additional sources.
+#
+# Example of `/etc/fwissr/fwissr.json` file:
+#
+# ```
+#  {
+#    'fwissr_sources': [
+#      { 'filepath': '/mnt/my_app/conf/' },
+#      { 'filepath': '/etc/my_app.json' },
+#      { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config', 'refresh': true },
+#    ],
+#    'fwissr_refresh_period': 30,
+# }
+# ```
+#
+# Global registry is accessed with: `Fwissr['/foo/bar']`
+#
 module Fwissr
 
   # default path where main conf file is located
@@ -30,19 +60,22 @@ module Fwissr
   class << self
     attr_writer :main_conf_path, :main_user_conf_path
 
-    # Get config files directory
+    # Main config files directory
+    # @api private
     def main_conf_path
       @main_conf_path ||= DEFAULT_MAIN_CONF_PATH
     end
 
-    # Get user's specific config files directory
+    # User's specific config files directory
+    # @api private
     def main_user_conf_path
       @main_user_conf_path ||= File.join(Fwissr.find_home, DEFAULT_MAIN_USER_CONF_DIR)
     end
 
-    # finds the user's home directory
+    # Finds the user's home directory
     #
-    # Borrowed from rubygems
+    # @note Borrowed from rubygems
+    # @api private
     def find_home
       ['HOME', 'USERPROFILE'].each do |homekey|
         return ENV[homekey] if ENV[homekey]
@@ -64,6 +97,7 @@ module Fwissr
     end
 
     # Parse command line arguments
+    # @api private
     def parse_args!(argv)
       args = {
         :inspect  => false,
@@ -121,26 +155,8 @@ module Fwissr
       args
     end
 
-
-    #
-    # Global Registry
-    #
-    #
-    # NOTE: Parses main conf files (/etc/fwissr/fwissr.json and ~/.fwissr/fwissr.json) then uses 'fwissr_sources' setting to setup additional sources
-    #
-    # Example of /etc/fwissr/fwissr.json file:
-    #
-    #  {
-    #    'fwissr_sources': [
-    #      { 'filepath': '/mnt/my_app/conf/' },
-    #      { 'filepath': '/etc/my_app.json' },
-    #      { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config', 'refresh': true },
-    #    ],
-    #    'fwissr_refresh_period': 30,
-    # }
-    #
-
-    # access global registry with Fwissr['/foo/bar']
+    # Load global registry
+    # @api private
     def global_registry
       @global_registry ||= begin
         result = Fwissr::Registry.new('refresh_period' => self.main_conf['fwissr_refresh_period'])
@@ -168,7 +184,8 @@ module Fwissr
       end
     end
 
-    # fetch main fwissr conf
+    # Main config
+    # @api private
     def main_conf
       @main_conf ||= begin
         result = { }
@@ -185,15 +202,26 @@ module Fwissr
       end
     end
 
+    # Main config file
+    # @api private
     def main_conf_file
       @main_conf_file ||= File.join(self.main_conf_path, MAIN_CONF_FILE)
     end
 
+    # Main user's config file
+    # @api private
     def main_user_conf_file
       @main_user_conf_file ||= File.join(self.main_user_conf_path, MAIN_CONF_FILE)
     end
 
-    # delegate to global registry
+    # Accessors to global registry
+    #
+    # Examples:
+    #   Fwissr['/foo/bar']
+    #   Fwissr.get('/foo/bar')
+    #
+    # @!method [](key)
+    # @!method get(key)
     [ :[], :get ].each do |meth_name|
       class_eval <<-EOS, __FILE__, __LINE__
         def #{meth_name}(key)
@@ -202,6 +230,11 @@ module Fwissr
       EOS
     end
 
+    # Dumps global registry: `Fwissr.dump`
+    # Dumps global registry keys: `Fwissr.keys`
+    #
+    # @!method keys
+    # @!method dump
     [ :keys, :dump ].each do |meth_name|
       class_eval <<-EOS, __FILE__, __LINE__
         def #{meth_name}
@@ -215,6 +248,11 @@ module Fwissr
     # Utils
     #
 
+    # Parse a configuration file
+    #
+    # @param conf_file_path [String] Configuration file path
+    # @return [Hash] Parse configuration
+    # @api private
     def parse_conf_file(conf_file_path)
       conf_file_ext = File.extname(conf_file_path)
 
@@ -234,12 +272,14 @@ module Fwissr
       end
     end
 
-    # borrowed from rails
+    # @note Borrowed from rails
+    # @api private
     def merge_conf(to_hash, other_hash)
       self.merge_conf!(to_hash.dup, other_hash)
     end
 
-    # borrowed from rails
+    # @note Borrowed from rails
+    # @api private
     def merge_conf!(to_hash, other_hash)
       other_hash.each_pair do |k,v|
         tv = to_hash[k]
@@ -248,7 +288,8 @@ module Fwissr
       to_hash
     end
 
-    # simple deep freezer
+    # Simple deep freezer
+    # @api private
     def deep_freeze(obj)
       if obj.is_a?(Hash)
         obj.each do |k, v|

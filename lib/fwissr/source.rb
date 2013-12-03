@@ -1,3 +1,4 @@
+# @abstract Subclass and override {#fetch_conf} to implement a configuration source.
 class Fwissr::Source
 
   autoload :File,    'fwissr/source/file'
@@ -30,17 +31,21 @@ class Fwissr::Source
     @conf = nil
   end
 
-  # reset source
+  # Reset source
   def reset!
     @conf = nil
   end
 
-  # source can be refreshed ?
+  # Source can be refreshed ?
+  #
+  # @return [Boolean] Is it a refreshable source ?
   def can_refresh?
     @options && (@options['refresh'] == true)
   end
 
-  # get conf
+  # Get source conf
+  #
+  # @return [Hash] The source's configuration
   def get_conf
     if (@conf && !self.can_refresh?)
       # return already fetched conf if refresh is not allowed
@@ -51,9 +56,11 @@ class Fwissr::Source
     end
   end
 
-  # fetch conf from source
+  # Fetch conf from source
+  #
+  # @abstract MUST be implemented by child class
+  # @return [Hash] The source's configuration
   def fetch_conf
-    # MUST be implemented by child class
     raise "not implemented"
   end
 

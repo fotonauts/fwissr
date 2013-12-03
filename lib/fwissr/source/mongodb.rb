@@ -10,13 +10,15 @@ rescue LoadError
   end
 end
 
+# Mongodb based source
 class Fwissr::Source::Mongodb < Fwissr::Source
 
+  # A mongodb connection
+  # @api private
   class Connection
 
     attr_reader :db_name
 
-    # init
     def initialize(uri)
       raise "URI is missing: #{uri}" if (uri.nil? || uri == '')
 
@@ -44,6 +46,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
       end
     end
 
+    # Database connection
     def conn
       @conn ||= begin
         case @kind
@@ -55,6 +58,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
       end
     end
 
+    # Database collection
     def collection(col_name)
       @collections[col_name] ||= begin
         case @kind
@@ -66,7 +70,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
       end
     end
 
-    # returns an Enumerator for all documents from given collection
+    # Returns an Enumerator for all documents from given collection
     def fetch(col_name)
       case @kind
       when :moped, :mongo
@@ -74,7 +78,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
       end
     end
 
-    # insert document in collection
+    # Insert document in collection
     def insert(col_name, doc)
       case @kind
       when :moped, :mongo
@@ -82,7 +86,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
       end
     end
 
-    # create a collection
+    # Create a collection
     def create_collection(col_name)
       case @kind
       when :moped
@@ -92,7 +96,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
       end
     end
 
-    # drop database
+    # Drop database
     def drop_database(db_name)
       case @kind
       when :moped
@@ -105,6 +109,10 @@ class Fwissr::Source::Mongodb < Fwissr::Source
 
   class << self
 
+    # Instanciate source
+    #
+    # @param settings [Hash] Mongodb settings
+    # @return [Fwissr::Source::Mongodb] Instance
     def from_settings(settings)
       if settings['mongodb'].nil? || (settings['mongodb'] == '') || settings['collection'].nil? || (settings['collection'] == '')
         raise "Erroneous mongodb settings: #{settings.inspect}"
@@ -119,6 +127,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
       self.new(conn, settings['collection'], options)
     end
 
+    # @api private
     def connection_for_uri(uri)
       @connections ||= { }
       @connections[uri] ||= Fwissr::Source::Mongodb::Connection.new(uri)
@@ -135,6 +144,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
   # API
   #
 
+  # Subclass {Fwissr::Source#initialize}
   def initialize(conn, collection_name, options = { })
     super(options)
 
@@ -142,6 +152,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
     @collection_name = collection_name
   end
 
+  # Implements {Fwissr::Source#fetch_conf}
   def fetch_conf
     result = { }
     result_part = result
@@ -158,7 +169,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
       end
     end
 
-    # build conf hash from collection's documents
+    # Build conf hash from collection's documents
     conf = { }
     self.conn.fetch(@collection_name).each do |doc|
       key = doc['_id']

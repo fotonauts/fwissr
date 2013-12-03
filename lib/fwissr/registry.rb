@@ -25,6 +25,9 @@ module Fwissr
       @refresh_thread = nil
     end
 
+    # Param add a source to registry
+    #
+    # @param source [Fwissr::Source] Concrete source instance
     def add_source(source)
       @semaphore.synchronize do
         @sources << source
@@ -42,11 +45,15 @@ module Fwissr
       self.ensure_refresh_thread
     end
 
+    # Reload the registry
     def reload!
       self.reset!
       self.load!
     end
 
+    # Get a registry key value
+    #
+    # @param key [String] Key
     def get(key)
       # split key
       key_ary = key.split('/')
@@ -65,12 +72,18 @@ module Fwissr
 
     alias :[] :get
 
+    # Get all keys in registry
+    #
+    # @return [Array] Keys list
     def keys
       result = [ ]
       _keys(result, [ ], self.registry)
       result.sort
     end
 
+    # Dump the registry
+    #
+    # @return [Hash] The entire registry
     def dump
       self.registry
     end
@@ -80,16 +93,19 @@ module Fwissr
     # PRIVATE
     #
 
+    # @api private
     def refresh_thread
       @refresh_thread
     end
 
+    # @api private
     def have_refreshable_source?
       @semaphore.synchronize do
         !@sources.find { |source| source.can_refresh? }.nil?
       end
     end
 
+    # @api private
     def ensure_refresh_thread
       # check refresh thread state
       if ((@refresh_period > 0) && self.have_refreshable_source?) && (!@refresh_thread || !@refresh_thread.alive?)
@@ -103,6 +119,7 @@ module Fwissr
       end
     end
 
+    # @api private
     def ensure_frozen
       if !@registry.frozen?
         @semaphore.synchronize do
@@ -111,6 +128,7 @@ module Fwissr
       end
     end
 
+    # @api private
     def reset!
       @semaphore.synchronize do
         @registry = { }
@@ -121,6 +139,7 @@ module Fwissr
       end
     end
 
+    # @api private
     def load!
       @semaphore.synchronize do
         @registry = { }
@@ -132,6 +151,7 @@ module Fwissr
       end
     end
 
+    # @api private
     def registry
       self.ensure_refresh_thread
       self.ensure_frozen
@@ -139,7 +159,8 @@ module Fwissr
       @registry
     end
 
-    # helper for #keys
+    # Helper for #keys
+    # @api private
     def _keys(result, key_ary, hash)
       hash.each do |key, value|
         key_ary << key

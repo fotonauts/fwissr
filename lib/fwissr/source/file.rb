@@ -1,7 +1,13 @@
+# File based source
 class Fwissr::Source::File < Fwissr::Source
 
   class << self
 
+    # Instanciate source from path
+    #
+    # @param path [path] File path
+    # @param options [Hash] Source options
+    # @return [Fwissr::Source::File] Instance
     def from_path(path, options = { })
       if path.nil? || (path == '')
         raise "Unexpected file source path: #{path.inspect}"
@@ -10,6 +16,10 @@ class Fwissr::Source::File < Fwissr::Source
       self.new(path, options)
     end
 
+    # Instanciate source
+    #
+    # @param settings [Hash] Source settings
+    # @return [Fwissr::Source::File] Instance
     def from_settings(settings)
       options = settings.dup
       options.delete('filepath')
@@ -28,6 +38,7 @@ class Fwissr::Source::File < Fwissr::Source
   # API
   #
 
+  # Subclass {Fwissr::Source#initialize}
   def initialize(path, options = { })
     super(options)
 
@@ -36,6 +47,7 @@ class Fwissr::Source::File < Fwissr::Source
     @path = path
   end
 
+  # Implements {Fwissr::Source#fetch_conf}
   def fetch_conf
     result = { }
 
@@ -59,6 +71,7 @@ class Fwissr::Source::File < Fwissr::Source
   # PRIVATE
   #
 
+  # @api private
   def merge_conf_file!(result, conf_file_path)
     # parse conf file
     conf = Fwissr.parse_conf_file(conf_file_path)
