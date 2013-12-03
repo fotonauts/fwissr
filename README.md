@@ -1,10 +1,15 @@
 Fwissr
 ======
 
-A simple configuration registry tool by Fotonauts.
+A simple configuration registry tool by [Fotonauts](http://www.fotopedia.com).
+
 
 [![Build Status](https://travis-ci.org/fotonauts/fwissr.png)](https://travis-ci.org/fotonauts/fwissr)
 [![Code Climate](https://codeclimate.com/github/fotonauts/fwissr.png)](https://codeclimate.com/github/fotonauts/fwissr)
+
+- More information [on our tumblr](http://fotopedia-code.tumblr.com)
+- Source code [on github](http://github.com/fotonauts/fwissr)
+- Code documentation [on rubydoc](http://rubydoc.info/gems/fwissr/frames)
 
 
 Install
