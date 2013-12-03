@@ -64,7 +64,7 @@ $ fwissr -j -p /horn
   ]
 }
 
-# dump all registry with pretty print json output
+# dump registry with pretty print json output
 # NOTE: yes, that's the same as 'fwissr -jp /'
 $ fwissr --dump -jp
 {
@@ -82,7 +82,9 @@ $ fwissr --dump -jp
 Additional configuration file
 =============================
 
-Provide additional configuration files with the `fwissr_sources` setting in `fwissr.json`:
+In addition to the main `fwissr.json` configuration ile, all files in `/etc/fwissr/` and `~/.fwissr/` directories are automatically loaded. The settings for these configurations will be prefixed with the file name.
+
+You can provide too additional configuration files with the `fwissr_sources` setting in `fwissr.json`:
 
 ```json
 {
@@ -91,8 +93,6 @@ Provide additional configuration files with the `fwissr_sources` setting in `fwi
   ]
 }
 ```
-
-The settings for that configuration will be prefixed with the file name.
 
 For example, with that `/etc/my_app.json`:
 
@@ -253,6 +253,7 @@ For example:
 ```
 
 ```ruby
+require 'mongo'
 require 'fwissr'
 
 Fwissr['/my_app/stuff/foo']
@@ -265,7 +266,9 @@ Fwissr['/my_app/stuff/database/port']
 # => "1337"
 ```
 
-As with configuration files you can use dots in collection name to define a path for configuration settings. The `top_level` setting is also supported to bypass that behaviour. Note too that the `fwissr` collection is by default a `top_level` configuration (as the `/etc/fwissr/fwissr.json` configuration file).
+As with configuration files you can use dots in collection name to define a path for configuration settings. The `top_level` setting is also supported to bypass that behaviour. Note that the `fwissr` collection is by default a `top_level` configuration (as the `/etc/fwissr/fwissr.json` configuration file).
+
+Fwissr supports both the official `mongo` ruby driver and the `mongoid`'s `moped` driver. Don't forget to include one of these gems by yourself.
 
 
 Refreshing registry
