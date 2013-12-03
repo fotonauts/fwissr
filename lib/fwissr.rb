@@ -146,14 +146,14 @@ module Fwissr
         result = Fwissr::Registry.new('refresh_period' => self.main_conf['fwissr_refresh_period'])
 
         # check main conf files
-        if File.exists?(self.main_conf_file) || File.exists?(self.main_user_conf_file)
+        if File.exists?(self.main_conf_path) || File.exists?(self.main_user_conf_path)
           # setup main conf files sources
-          if File.exists?(self.main_conf_file)
-            result.add_source(Fwissr::Source.from_settings({ 'filepath' => self.main_conf_file }))
+          if File.exists?(self.main_conf_path)
+            result.add_source(Fwissr::Source.from_settings({ 'filepath' => self.main_conf_path }))
           end
 
-          if File.exists?(self.main_user_conf_file)
-            result.add_source(Fwissr::Source.from_settings({ 'filepath' => self.main_user_conf_file }))
+          if File.exists?(self.main_user_conf_path)
+            result.add_source(Fwissr::Source.from_settings({ 'filepath' => self.main_user_conf_path }))
           end
 
           # setup additional sources
