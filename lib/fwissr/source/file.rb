@@ -30,7 +30,7 @@ class Fwissr::Source::File < Fwissr::Source
   end # class << self
 
 
-  # [Array] Files handled as 'top level'
+  # [Array] Files names corresponding to 'top level' configurations
   TOP_LEVEL_CONF_FILES = [ 'fwissr' ].freeze
 
   # [String] File path

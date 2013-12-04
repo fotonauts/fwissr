@@ -155,7 +155,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
 
   end # class << self
 
-  # [Array] Collections handled as 'top level'
+  # [Array] Collection names corresponding to 'top level' configurations
   TOP_LEVEL_COLLECTIONS = [ 'fwissr' ].freeze
 
   attr_reader :conn, :collection_name
