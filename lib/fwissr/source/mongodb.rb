@@ -17,8 +17,10 @@ class Fwissr::Source::Mongodb < Fwissr::Source
   # @api private
   class Connection
 
+    # [String] Database name
     attr_reader :db_name
 
+    # Init
     def initialize(uri)
       raise "URI is missing: #{uri}" if (uri.nil? || uri == '')
 
@@ -153,7 +155,7 @@ class Fwissr::Source::Mongodb < Fwissr::Source
 
   end # class << self
 
-
+  # [Array] Collections handled as 'top level'
   TOP_LEVEL_COLLECTIONS = [ 'fwissr' ].freeze
 
   attr_reader :conn, :collection_name

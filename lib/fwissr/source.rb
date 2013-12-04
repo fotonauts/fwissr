@@ -27,8 +27,10 @@ class Fwissr::Source
   # API
   #
 
+  # [Hash] Source options
   attr_reader :options
 
+  # Init
   def initialize(options = { })
     @options = options
 

@@ -30,8 +30,10 @@ class Fwissr::Source::File < Fwissr::Source
   end # class << self
 
 
+  # [Array] Files handled as 'top level'
   TOP_LEVEL_CONF_FILES = [ 'fwissr' ].freeze
 
+  # [String] File path
   attr_reader :path
 
   #

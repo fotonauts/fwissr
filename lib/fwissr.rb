@@ -19,7 +19,7 @@ require 'fwissr/registry'
 #
 # Fwissr loads all conf files in directories: +/etc/fwissr/+ and +~/.fwissr/+
 #
-# Two conf files are treated differently: +/etc/fwissr/fwissr.json+ and +~/.fwissr/fwissr.json+
+# Two conf files are handled differently: +/etc/fwissr/fwissr.json+ and +~/.fwissr/fwissr.json+
 #
 # These two main conf files are 'top_level' ones and so their settings are added to registry root. They can
 # too contain a +fwissr_sources+ setting that is used to setup additional sources.
@@ -260,7 +260,7 @@ module Fwissr
     # @api private
     #
     # @param conf_file_path [String] Configuration file path
-    # @return [Hash] Parse configuration
+    # @return [Hash] Parsed configuration
     def parse_conf_file(conf_file_path)
       conf_file_ext = File.extname(conf_file_path)
 

@@ -11,8 +11,10 @@ module Fwissr
     # API
     #
 
+    # [Integer] Refresh period
     attr_reader :refresh_period
 
+    # Init
     def initialize(options = { })
       @refresh_period = options['refresh_period'] || DEFAULT_REFRESH_PERIOD
 
