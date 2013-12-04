@@ -5,6 +5,10 @@ class Fwissr::Source
   autoload :Mongodb, 'fwissr/source/mongodb'
 
   class << self
+    # Instanciate source from settings
+    #
+    # @param settings [Hash] Source settings
+    # @return [Fwissr::Source::File, Fwissr::Source::Mongodb] Source instance
     def from_settings(settings)
       raise "Unexpected source settings class: #{settings.inspect}" unless settings.is_a?(Hash)
 
@@ -38,7 +42,7 @@ class Fwissr::Source
 
   # Source can be refreshed ?
   #
-  # @return [Boolean] Is it a refreshable source ?
+  # @return [true,false] Is it a refreshable source ?
   def can_refresh?
     @options && (@options['refresh'] == true)
   end
@@ -59,6 +63,7 @@ class Fwissr::Source
   # Fetch conf from source
   #
   # @abstract MUST be implemented by child class
+  #
   # @return [Hash] The source's configuration
   def fetch_conf
     raise "not implemented"

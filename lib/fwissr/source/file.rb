@@ -71,7 +71,12 @@ class Fwissr::Source::File < Fwissr::Source
   # PRIVATE
   #
 
+  # Merge two conf files
+  #
   # @api private
+  #
+  # @param result [Hash] Merge to that existing conf
+  # @param conf_file_path [String] File path
   def merge_conf_file!(result, conf_file_path)
     # parse conf file
     conf = Fwissr.parse_conf_file(conf_file_path)

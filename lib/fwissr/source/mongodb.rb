@@ -59,6 +59,9 @@ class Fwissr::Source::Mongodb < Fwissr::Source
     end
 
     # Database collection
+    #
+    # @param col_name [String] Collection name
+    # @return [Object] Collection handler
     def collection(col_name)
       @collections[col_name] ||= begin
         case @kind
@@ -71,6 +74,9 @@ class Fwissr::Source::Mongodb < Fwissr::Source
     end
 
     # Returns an Enumerator for all documents from given collection
+    #
+    # @param col_name [String] Collection name
+    # @return [Enumerator] Collection enumerator
     def fetch(col_name)
       case @kind
       when :moped, :mongo
@@ -79,6 +85,9 @@ class Fwissr::Source::Mongodb < Fwissr::Source
     end
 
     # Insert document in collection
+    #
+    # @param col_name [String] Collection name
+    # @param doc [Hash] Document to insert
     def insert(col_name, doc)
       case @kind
       when :moped, :mongo
@@ -87,6 +96,8 @@ class Fwissr::Source::Mongodb < Fwissr::Source
     end
 
     # Create a collection
+    #
+    # @param col_name [String] Collection name
     def create_collection(col_name)
       case @kind
       when :moped
@@ -97,6 +108,8 @@ class Fwissr::Source::Mongodb < Fwissr::Source
     end
 
     # Drop database
+    #
+    # @param db_name [String] Database name
     def drop_database(db_name)
       case @kind
       when :moped
@@ -127,7 +140,12 @@ class Fwissr::Source::Mongodb < Fwissr::Source
       self.new(conn, settings['collection'], options)
     end
 
+    # Get a memoized connection
+    #
     # @api private
+    #
+    # @param uri [String] Connection URI
+    # @return [Fwissr::Source::Mongodb::Connection] Connection handler
     def connection_for_uri(uri)
       @connections ||= { }
       @connections[uri] ||= Fwissr::Source::Mongodb::Connection.new(uri)

@@ -54,6 +54,7 @@ module Fwissr
     # Get a registry key value
     #
     # @param key [String] Key
+    # @return [Object] Value
     def get(key)
       # split key
       key_ary = key.split('/')
@@ -99,6 +100,8 @@ module Fwissr
     end
 
     # @api private
+    #
+    # @return [true,false] Is there at least one refreshable source ?
     def have_refreshable_source?
       @semaphore.synchronize do
         !@sources.find { |source| source.can_refresh? }.nil?
@@ -160,6 +163,7 @@ module Fwissr
     end
 
     # Helper for #keys
+    #
     # @api private
     def _keys(result, key_ary, hash)
       hash.each do |key, value|

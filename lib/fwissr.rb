@@ -17,17 +17,14 @@ require 'fwissr/source'
 require 'fwissr/registry'
 
 #
-# Global Registry
-# ===============
-#
-# Fwissr loads all conf files in main directories: +/etc/fwissr/+ and +~/.fwissr/+
+# Fwissr loads all conf files in directories: +/etc/fwissr/+ and +~/.fwissr/+
 #
 # Two conf files are treated differently: +/etc/fwissr/fwissr.json+ and +~/.fwissr/fwissr.json+
 #
-# These two main conf files are 'top_level' ones and so their settings are added to global registry root. They can
-# too contain a +fwissr_sources+ setting that is then used to setup additional sources.
+# These two main conf files are 'top_level' ones and so their settings are added to registry root. They can
+# too contain a +fwissr_sources+ setting that is used to setup additional sources.
 #
-# Global registry is accessed with Fwissr#[] method
+# Registry is accessed with Fwissr#[] method
 #
 # @example +/etc/fwissr/fwissr.json+ file:
 #
@@ -38,7 +35,7 @@ require 'fwissr/registry'
 #      { 'mongodb': 'mongodb://db1.example.net/my_app', 'collection': 'config', 'refresh': true },
 #    ],
 #    'fwissr_refresh_period': 30
-# }
+#  }
 #
 module Fwissr
 
@@ -55,13 +52,19 @@ module Fwissr
     attr_writer :main_conf_path, :main_user_conf_path
 
     # Main config files directory
+    #
     # @api private
+    #
+    # @return [String] Directory path
     def main_conf_path
       @main_conf_path ||= DEFAULT_MAIN_CONF_PATH
     end
 
     # User's specific config files directory
+    #
     # @api private
+    #
+    # @return [String] Directory path
     def main_user_conf_path
       @main_user_conf_path ||= File.join(Fwissr.find_home, DEFAULT_MAIN_USER_CONF_DIR)
     end
@@ -70,6 +73,8 @@ module Fwissr
     #
     # @note Borrowed from rubygems
     # @api private
+    #
+    # @return [String] Directory path
     def find_home
       ['HOME', 'USERPROFILE'].each do |homekey|
         return ENV[homekey] if ENV[homekey]
@@ -91,6 +96,7 @@ module Fwissr
     end
 
     # Parse command line arguments
+    #
     # @api private
     def parse_args!(argv)
       args = {
@@ -149,8 +155,11 @@ module Fwissr
       args
     end
 
-    # Load global registry
+    # Load registry
+    #
     # @api private
+    #
+    # @return [Hash] Registry
     def global_registry
       @global_registry ||= begin
         result = Fwissr::Registry.new('refresh_period' => self.main_conf['fwissr_refresh_period'])
@@ -179,7 +188,10 @@ module Fwissr
     end
 
     # Main config
+    #
     # @api private
+    #
+    # @return [Hash] Configuration from main +fwissr.json+ files
     def main_conf
       @main_conf ||= begin
         result = { }
@@ -197,34 +209,42 @@ module Fwissr
     end
 
     # Main config file
+    #
     # @api private
+    #
+    # @return [String] File path
     def main_conf_file
       @main_conf_file ||= File.join(self.main_conf_path, MAIN_CONF_FILE)
     end
 
     # Main user's config file
+    #
     # @api private
+    #
+    # @return [String] File path
     def main_user_conf_file
       @main_user_conf_file ||= File.join(self.main_user_conf_path, MAIN_CONF_FILE)
     end
 
-    # Global registry accessor
+    # Registry accessor
     #
-    # @param key [String] setting key
-    # @return [Object] setting value
+    # @param key [String] Setting key
+    # @return [Object] Setting value
     def [](key)
       self.global_registry[key]
     end
 
     alias :get :[]
 
-    # Dumps global registry keys
+    # Dumps registry keys
     #
     # @return [Array] Keys list
     def keys
       self.global_registry.keys
     end
 
+    # Dumps registry
+    #
     # @return [Hash] The entire registry
     def dump
       self.global_registry.dump
@@ -237,9 +257,10 @@ module Fwissr
 
     # Parse a configuration file
     #
+    # @api private
+    #
     # @param conf_file_path [String] Configuration file path
     # @return [Hash] Parse configuration
-    # @api private
     def parse_conf_file(conf_file_path)
       conf_file_ext = File.extname(conf_file_path)
 
@@ -259,14 +280,26 @@ module Fwissr
       end
     end
 
+    # Merge two conf files
+    #
     # @note Borrowed from rails
     # @api private
+    #
+    # @param to_hash [Hash] Merge to this conf
+    # @param other_hash [Hash] Merge this conf
+    # @return [Hash] Merged configuration
     def merge_conf(to_hash, other_hash)
       self.merge_conf!(to_hash.dup, other_hash)
     end
 
+    # Merge two conf files (in place)
+    #
     # @note Borrowed from rails
     # @api private
+    #
+    # @param to_hash [Hash] Merge to this conf
+    # @param other_hash [Hash] Merge this conf
+    # @return [Hash] Merged configuration
     def merge_conf!(to_hash, other_hash)
       other_hash.each_pair do |k,v|
         tv = to_hash[k]
@@ -276,7 +309,11 @@ module Fwissr
     end
 
     # Simple deep freezer
+    #
     # @api private
+    #
+    # @param obj [Object] Object to freeze
+    # @return [Object] Deep frozen object
     def deep_freeze(obj)
       if obj.is_a?(Hash)
         obj.each do |k, v|
