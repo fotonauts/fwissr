@@ -5,6 +5,7 @@ A simple configuration registry tool by [Fotonauts](http://www.fotopedia.com).
 
 [![Build Status](https://travis-ci.org/fotonauts/fwissr.png)](https://travis-ci.org/fotonauts/fwissr)
 [![Code Climate](https://codeclimate.com/github/fotonauts/fwissr.png)](https://codeclimate.com/github/fotonauts/fwissr)
+[![Coverage Status](https://coveralls.io/repos/fotonauts/fwissr/badge.png)](https://coveralls.io/r/fotonauts/fwissr)
 
 - More information [on our tumblr](http://fotopedia-code.tumblr.com)
 - Source code [on github](http://github.com/fotonauts/fwissr)

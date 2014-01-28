@@ -4,3 +4,4 @@ gemspec :path => "../"
 
 gem "mongo", '~> 1.9'
 gem "bson_ext"
+gem 'coveralls', :require => false
