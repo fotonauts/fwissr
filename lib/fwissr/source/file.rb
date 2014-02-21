@@ -54,7 +54,7 @@ class Fwissr::Source::File < Fwissr::Source
     result = { }
 
     conf_files = if ::File.directory?(@path)
-      Dir[@path + "/*.{json,yml}"].sort
+      Dir[@path + "/*.{json,yml,yaml}"].sort
     else
       [ @path ]
     end
