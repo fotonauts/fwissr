@@ -10,7 +10,3 @@ gemfile:
   - gemfiles/moped-2.0.gemfile
 services:
   - mongodb
-notifications:
-  email:
-    recipients:
-      - aymerick@jehanne.org
